@@ -1,11 +1,33 @@
-<span style='text-align:center;'>
+<center>
 
 # An&aacute;lise do consenso como indicativo de qualidade em f&oacute;runs MOOC <!--{style=text-align:center}-->
+
+</center>
 <br/><br/><br/>
-</span>
-<span style='text-align: center;'>
 
 #### Resumo <!--{style=text-align:justify}-->
 Discuss&atilde;es em chats e f&oacute;runs de plataformas de ensino online, como aquelas para Massive Open Online Couses - MOOC, servem para construir conclus&otilde;es consensuais que agreguem valor pedag&oacute;gico. O estudo da correla&ccedil;&atilde;o entre consenso e a qualidade da conclus&atilde;o em discuss&otilde;es online tem recebido pouca aten&ccedil;&atilde;o. Este artigo usa `soft consensus` - quando h&aacute; grada&ccedil;&atilde;o do consenso, desde nenhum at&eacute; unanimidade - para apresentar um estudo estat&iacute;stico onde tal correla&ccedil;&atilde;o &eacute; medida a partir de dados de f&oacute;runs de MOOC e o apoio dos instrutores &agrave; conclus&atilde;o consensual &eacute; o indicador de qualidade. Resultados preliminares apontam uma correla&ccedil;&atilde;o negativa.
 
-</span>
+<br/><br/><br/>
+
+## Introdu&ccedil;&atilde;o
+
+Fóruns de discussão e debates online são importantes elementos de suporte ao aprendizado, onde o debate oferece ao estudante maior clareza acerca de um dado tema. Em tais fóruns, quando uma discussão é aberta, é natural criar-se uma expectativa de conclusão, seja esta consensual ou definitiva. Diante da dificuldade de se alcançar conclusões definitivas em certos temas de debate, o consenso ganha força como instrumento de avaliação de qualidade da solução proposta. Aqui, ``consenso'' é definido como segue.
+
+**Definição 1:** ``Consenso`` é uma medida de concordância entre as respostas ou opiniões de um grupo de indivíduos sobre determinada questão ou assunto. 
+
+A definição~1 permite modelar de uma concordância parcial à unanimidade. A definição se baseia naquela de ``soft consensus`` [Herrera-Viedma et al. 2014] que acomoda incertezas.
+
+Embora a pesquisa sobre consenso tenha evoluído e se adaptado aos domínios virtuais, com base em nossos levantamentos, não encontramos pesquisas que apontem se uma decisão consensual é de fato uma decisão de qualidade em ambientes de discussões online. Por conjectura, podemos apontar a dificuldade em se obter dados de discussões online para análise, cujas conclusões estejam classificadas em função da qualidade. Neste estudo, tal dificuldade foi contornada utilizando-se dados oriundos de fóruns de MOOCs (do inglês, *Massive Open Online Courses*), tomando o apoio do corpo de instrutores à conclusão consensual como parâmetro de qualidade.
+
+Este artigo pretende medir a correlação entre consenso e qualidade em discussões online, e especificamente no ambiente educacional (MOOC). Para tanto, utilizou-se uma base de dados de postagens de fóruns educacionais oriundos de 12 MOOC diferentes oferecidos pela Universidade de Stanford (www.stanford.edu) na plataforma edX (www.edx.org). O consenso entre estas postagens em cada discussão foi calculado com base em três diferentes métricas de distância textual para avaliar o ruído introduzido por tais métricas. O código fonte utilizado para tais cálculos está disponível em: github.com/[X].
+
+Após conhecer o consenso e a qualidade das discussões por toda a base de dados, procedeu-se à análise estatística de tais dados. Para tanto, a partir de um estudo preliminar envolvendo intervalo de confiança e *Bootstraping*, analisou-se a média de apoio dos instrutores à decisão consensual. Com base em Regressão Logística, encontraram-se indícios de que o consenso tem efeito negativo na qualidade da decisão. Nossos resultados confirmam os resultados obtidos na literatura, mas agora no contexto de educação online.
+
+## Mensurando Consenso
+
+Como já adiantando quando da Definição~1, \textit{Soft Consensus} é um conceito onde o consenso é definido a partir de modelos capazes de assimilar incerteza \cite{herrera2014review}. Contudo, tal potencial diz respeito apenas a quantificadores linguísticos e Lógica Difusa. A maioria destes modelos segue metodologias rígidas divididas em rodadas de discussão e geralmente moderadas por um agente externo \cite{cabrerizo2015fuzzy}, embora haja alternativas mais flexíveis \cite{alonso2013linguistic}. Como estamos lidando com discussões já finalizadas e agentes dispersos no tempo, além de pouco comprometidos com o debate, mesmo metodologias mais flexíveis ainda necessitam de certos ajustes para se enquadrarem ao nosso propósito. Em face a isto, tomamos toda a discussão como sendo uma única rodada de debate e cada postagem como um agente individualizado. Como já mencionado, a base de dados utilizada já discrimina opiniões, perguntas e respostas. Deste modo, ainda tomamos as postagens discriminadas como ``opinião'' como as alternativas disponíveis para consideração. A distância textual entre uma postagem e cada uma das opiniões mede o nível de apoio que aquela postagem oferecia a cada opinião.
+
+Métricas de distância textual podem introduzir ruído na análise, e de acordo com Gomaa e Fahmy \cite{gomaa2013survey} existem três classes principais de algoritmos de similaridade textual. Diante disto, analisou-se o consenso em função de três algoritmos de distância textual diferentes, um para cada classe, comparando os resultados. A primeira classe, e mais simplista delas, é a similaridade baseada em caracteres. Optamos por adotar a distância de edição ou distância de Damerau-Levenshtein, por ser a mais difundida. A segunda classe de algoritmos mede a distância semântica com base em Corpus textuais de vários idiomas, dentre eles o Inglês. Para esta, utilizou-se o algoritmo DISCO \cite{kolb2008disco}, por se tratar de uma tecnologia bem estabelecia e com implementação robusta. A terceira e ultima classe de algoritmos traz algoritmos baseados em redes semânticas de palavras e expressões. Para esta classe, aplicou-se um algoritmo baseado em Wordnet \cite{miller1998wordnet}, por dispor implementação bastante estável.
+
+Nosso processo semi estruturado para cálculo de consenso segue uma sequência simples: Identificam-se as opiniões dentre as postagens de uma discussão; calcula-se a matriz de preferências comparando todas as opiniões dois a dois (conforme descrito na Subseção~\ref{subsec:soft_consensus}); a partir da matriz de preferências, calculam-se similaridades entre tais preferências e ordenam-se as opiniões tanto no âmbito geral quanto para cada postagem individualizada; e, por fim, verifica-se o nível de consenso.
