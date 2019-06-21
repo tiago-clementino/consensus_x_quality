@@ -1,2 +1,1 @@
-# consensus_x_quality
-Análise do consenso como indicativo de qualidade em fóruns MOOC
+# An&aacute;lise do consenso como indicativo de qualidade em f&oacute;runs MOOC
