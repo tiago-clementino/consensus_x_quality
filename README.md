@@ -48,19 +48,19 @@ Nosso processo semi estruturado para cálculo de consenso segue uma sequência s
 
 ### Distância Textual
 
-Extrair opiniões e preferências a partir de dados textuais é um problema que pode ser atacado utilizando algoritmos de distância textual. A seguir, selecionamos uma abordagem para cada classe de distância textual, conforme Gomaa e Fahmy \cite{gomaa2013survey}, onde dividiu-se os algoritmos de distância textual em três classes distintas. Aplicamos três métricas de distância de classes diferentes para mensurar o ruído introduzido por tais métricas na análise.
+Extrair opiniões e preferências a partir de dados textuais é um problema que pode ser atacado utilizando algoritmos de distância textual. A seguir, selecionamos uma abordagem para cada classe de distância textual, conforme [Gomaa and Fahmy 2013], onde dividiu-se os algoritmos de distância textual em três classes distintas. Aplicamos três métricas de distância de classes diferentes para mensurar o ruído introduzido por tais métricas na análise.
 
 
-\textbf{Damerau-Levenshtein:} A distância de Damerau-Levenshtein \cite{damerau1964technique,levenshtein1966binary}, também conhecida como distância de edição, é a diferença entre duas cadeias de caracteres. Tal diferença é medida em quantos caracteres precisam ser eliminados de ambas para que estas se tornem iguais, conforme Equação~\ref{eq:dam-lev}.\begin{equation}\label{eq:dam-lev}
-lev_{a,b}(|a|,|b|) = \begin{cases} 0, & \mbox{se } a=b, \\ max(|a|,|b|), & \mbox{se } min(|a|,|b|)=0, \\ 
-min \begin{cases} lev_{a,b}(|a-1|,|b|)+1 \\ lev_{a,b}(|a|,|b-1|)+1 \\  lev_{a,b}(|a-1|,|b-1|)+1 \\
-\end{cases} & \mbox{caso contrário.} \end{cases}
-\end{equation}Sendo $a$ e $b$ duas cadeias de caracteres e as operações $a-1$ ou $b-1$ correspondem à eliminação de um caractere.
+**Damerau-Levenshtein:** A distância de Damerau-Levenshtein [Damerau 1964,Levenshtein 1966], também conhecida como distância de edição, é a diferença entre duas cadeias de caracteres. Tal diferença é medida em quantos caracteres precisam ser eliminados de ambas para que estas se tornem iguais, conforme Equação 1.
+
+![Damerau-Levenshtein](images/lev.gif) (1)
+
+Sendo *a* e *b* duas cadeias de caracteres e as operações ![a-1](images/a_1.gif) ou ![b-1](images/b_1.gif) correspondem à eliminação de um caractere.
 
 
-\textbf{DISCO:} DISCO \cite{kolb2008disco} pode ser descrita como relação distributiva e semelhança distributiva, simultaneamente. Duas palavras são distributivamente semelhantes se possuem muitas palavras co-ocorrentes nos mesmos papeis sintáticos. Por outro lado, duas palavras são distributivamente relacionadas quando estão imersas no mesmo contexto, ou no mesmo conjunto livre de palavras co-ocorrentes. Neste sentido, DISCO não utiliza ferramentas sintáticas para correlacionar palavras (tal como uma Wordnet), porém faz aproximações livres de contexto de tais relações. Para tanto Kolb~\cite{kolb2008disco} utilizou métricas para mensurar informação mútua baseadas em~\cite{lin1998automatic}.
+**DISCO:** DISCO [Kolb 2008] pode ser descrita como relação distributiva e semelhança distributiva, simultaneamente. Duas palavras são distributivamente semelhantes se possuem muitas palavras co-ocorrentes nos mesmos papeis sintáticos. Por outro lado, duas palavras são distributivamente relacionadas quando estão imersas no mesmo contexto, ou no mesmo conjunto livre de palavras co-ocorrentes. Neste sentido, DISCO não utiliza ferramentas sintáticas para correlacionar palavras (tal como uma *Wordnet*), porém faz aproximações livres de contexto de tais relações. Para tanto [Kolb 2008] utilizou métricas para mensurar informação mútua baseadas em [Lin 1998].
 
-\textbf{Wordnet:} A Wordnet é uma base de dados textual semântico-sintática \cite{miller1998wordnet}. Aqui palavras são separadas por grupos sintáticos como verbos, pronomes, advérbios e adjetivos, e agrupadas em conjuntos de sinônimos, os chamado \textit{synsets}. Uma mesma palavra pode constar em mais de um \textit{synset}. \textit{Stop words} não estão incluídas. \textit{Synsets} são conectados uns aos outros por relacionamentos semânticos dentro de seus grupos sintáticos e a força de relacionamento entre duas palavras (elementos destes \textit{synsets}) é calculada em função destes relacionamentos.
+**Wordnet:** A Wordnet é uma base de dados textual semântico-sintática [Miller 1998]. Aqui palavras são separadas por grupos sintáticos como verbos, pronomes, advérbios e adjetivos, e agrupadas em conjuntos de sinônimos, os chamado *synsets*. Uma mesma palavra pode constar em mais de um *synset*. *Stop words* não estão incluídas. *Synsets* são conectados uns aos outros por relacionamentos semânticos dentro de seus grupos sintáticos e a força de relacionamento entre duas palavras (elementos destes *synsets*) é calculada em função destes relacionamentos.
 
 ### *Soft Consensus*
 
