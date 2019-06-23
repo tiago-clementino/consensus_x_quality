@@ -74,10 +74,19 @@ Assim, podemos entender ![\mu^p_{i,j}\in M](images/u_e_E.gif) como a relação d
 
  - Nível 1: *Par de Alternativas -* Este nível consiste em gerar uma matriz de similaridade para cada par de postagens em relação a cada par de opiniões ![SP^{i,j}=(sp^{i,j}_{k,l}),\forall p^i,p^j\in P(i\neq j),\forall x^k,x^l\in X (k\neq l)](images/SP_def.gif), conforme a equação: 
 
-![sp^{i,j}_{k,l}=1-{|\mu^{p^i}_{k,l}-\mu^{p^j}_{k,l}|}](images/sp__def.gif)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(1)
+![sp^{i,j}_{k,l}=1-{|\mu^{p^i}_{k,l}-\mu^{p^j}_{k,l}|}](images/sp__def.gif)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(2)
 
- Forma-se, assim, uma matriz de quatro dimensões $SP_{(m \times m)\times (n \times n)}$ comparando as preferências de todas as postagens duas a duas $(m \times m)$ em função às preferências daquela postagem com relação à cada par de opiniões comparadas $(n \times n)$. Em seguida, com base em uma função de agregação determinada $\Phi$, obtemos duas matrizes de preferência coletiva 1) comparando pares de opiniões agregando $SP_{(m \times m)\times (n \times n)}$ por postagem\begin{equation}sp_{k,l}=\Phi^i(\Phi^j(sp^{i,j}_{k,l}))~~\forall i,j\in \{1,...,m\}~|~i\neq j\end{equation}2) e pares de postagens agregando $SP_{(m \times m)\times (n \times n)}$ por opinião\begin{equation}sp^{i,j}=\Phi_k(\Phi_l(sp^{i,j}_{k,l})~~\forall k,l\in \{1,...,n\}~|~k\neq l\end{equation}Aqui usaremos a média harmônica como $\Phi$; 
-\item{Nível 2:}\label{nivel_2} \textit{Opiniões e Postagens -} Aqui é definido o nível de consenso para cada opinião $cx_k,\forall k\in \{1,...,n\}$, calculado em função de todas as postagens $P$ (já agregadas no nível anterior): \begin{equation}cx_k=\frac{\sum^n_{l=1,l\neq k}(sp_{k,l} + sp_{l,k})}{2(n-1)}\end{equation}%Este nível é útil para definir a ordem de preferência dentre todas as opiniões e, assim, definir a opinião de maior consenso; 
+ Forma-se, assim, uma matriz de quatro dimensões ![SP_{(m \times m)\times (n \times n)}](images/SP_matrix.gif) comparando as preferências de todas as postagens duas a duas ![(m \times m)](images/m_x_m.gif) em função às preferências daquela postagem com relação à cada par de opiniões comparadas ![(n \times n)](images/n_x_n.gif). Em seguida, com base em uma função de agregação determinada ![\Phi](images/phi.gif), obtemos duas matrizes de preferência coletiva 1) comparando pares de opiniões agregando ![SP_{(m \times m)\times (n \times n)}](images/SP_matrix.gif) por postagem
+ 
+ ![sp_{k,l}=\Phi^i(\Phi^j(sp^{i,j}_{k,l})) \forall i,j\in \{1,...,m\}~|~i\neq j](images/spkl.gif)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(3)
+ 
+ 2) e pares de postagens agregando ![SP_{(m \times m)\times (n \times n)}](images/SP_matrix.gif) por opinião
+ 
+ ![sp^{i,j}=\Phi_k(\Phi_l(sp^{i,j}_{k,l}) \forall k,l\in \{1,...,n\}~|~k\neq l](images/spij.gif)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(4)
+ 
+ Aqui usaremos a média harmônica como ![\Phi](images/phi.gif); 
+
+ - Nível 2: *Opiniões e Postagens -* Aqui é definido o nível de consenso para cada opinião $cx_k,\forall k\in \{1,...,n\}$, calculado em função de todas as postagens $P$ (já agregadas no nível anterior): \begin{equation}cx_k=\frac{\sum^n_{l=1,l\neq k}(sp_{k,l} + sp_{l,k})}{2(n-1)}\end{equation}%Este nível é útil para definir a ordem de preferência dentre todas as opiniões e, assim, definir a opinião de maior consenso; 
 \item{Nível 3:}\label{nivel_3} \textit{Postagens e Opiniões -} Este nível de consenso é adotado apenas neste trabalho e cria uma matriz de similaridade de natureza oposta à do nível anterior. Aqui é definido a ordem de similaridade em função de todas as opiniões $X$ (já agregadas no nível anterior) com relação à cada postagem $cp_i,i\in\{1,...,m\}$, conforme a equação:\begin{equation}cp_i=\frac{\sum^m_{j=1,j\neq i}(sp_{i,j} + sp_{j,i})}{2(m-1)}\end{equation}%Este nível será especialmente útil para uma próxima etapa de nosso estudo, onde utilizaremos a opinião mais próxima a cada uma das postagens; 
 \item{Nível 4:}\label{nivel_4} \textit{Geral -} O nível final de consenso $cg$ é definido como\begin{equation}cg=\frac{\sum^n_{k=1}cx_k}{n}\end{equation}
 \end{itemize}
