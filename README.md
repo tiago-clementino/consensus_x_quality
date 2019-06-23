@@ -131,3 +131,80 @@ A partir destes resultados, que rejeitam a hipótese nula para nossa questão de
 Aqui buscou-se estudar a correlação entre o consenso em discussões de fóruns MOOC e a qualidade das conclusões. Resultados mostraram que o consenso, no contexto dos dados considerados, é inversamente proporcional à qualidade em um fórum MOOC - sendo a opinião dos instrutores, nosso parâmetro de qualidade. Este resultado está em linha com aqueles de [Hirokawa 1982] e [Janis and Mann 1977]. Porém, estes afirmam que consenso pode ser visto como indicativo de qualidade apenas caso um rigoroso e "vigilante" processo de debate e argumentação seja seguido, além da heterogeneidade dos interlocutores assegurada. Contudo, além da dificuldade em estruturar discussões online de modo geral, segundo [Brinton et al. 2014], a maior parte das postagens realizadas em fóruns de MOOC são feitas no início do curso, quando os alunos ainda não tem muita familiaridade com o conteúdo. Com isto, por ser apresentada por alunos ainda inexperientes, a opinião consensual tenderia a não ter o apoio dos instrutores. Ainda sim, tal consideração não invalida os resultados alcançados aqui para a educação online.
 
 Este trabalho contribui com uma maior clareza da função ou até da utilidade real de se conhecer o grau de consenso em discussões online. Intuitivamente, reconhecer consenso nos parece uma ferramenta útil para muitas das atividades de aprendizado online, particularmente via MOOC. Infelizmente, esta relação pode não ser tão clara, merecendo mais esforços de pesquisa para considerar, além da qualidade da conclusão, satisfação, interesse e compreensão dos alunos, por exemplo.
+
+
+## Referências
+
+Agrawal, A., Venkatraman, J., Leonard, S., and Paepcke, A. (2015). Youedu: addressing confusion in mooc discussion forums by recommending instructional video clips.
+
+Alonso, S., Pérez, I. J., Cabrerizo, F. J., and Herrera-Viedma, E. (2013). A linguistic consensus model for web 2.0 communities. Applied Soft Computing, 13(1):149–157.
+
+Bass, B. M. (1963). Amount of participation, coalescence, and profitability of decision making discussions. The Journal of Abnormal and Social Psychology, 67(1):92.
+
+Brinton, C. G., Chiang, M., Jain, S., Lam, H., Liu, Z., and Wong, F. M. F. (2014). Learning about social learning in "moocs": From statistical analysis to generative model. IEEEtransactions on Learning Technologies, 7(4):346–359.
+
+Cabrerizo, F. J., Chiclana, F., Al-Hmouz, R., Morfeq, A., Balamash, A. S., and Herrera-Viedma, E. (2015). Fuzzy decision making and consensus: challenges. Journal of Intelligent & Fuzzy Systems, 29(3):1109–1118.
+
+Chen, H. and Zimbra, D. (2010). Ai and opinion mining. IEEE Intelligent Systems,25(3):74–80.
+
+Damerau, F. J. (1964). A technique for computer detection and correction of spelling errors. Communications of the ACM, 7(3):171–176.
+
+Doise, W., Mugny, G., James, A. S., Emler, N., and Mackie, D. (2013).The social development of the intellect, volume 10. Elsevier.
+
+Gelman, A. and Hill, J. (2006).Data analysis using regression and multilevel/hierarchical models. Cambridge university press.
+
+Gomaa, W. H. and Fahmy, A. A. (2013). A survey of text similarity approaches.International Journal of Computer Applications, 68(13):13–18.
+
+Herrera-Viedma, E., Cabrerizo, F. J., Kacprzyk, J., and Pedrycz, W. (2014). A review ofsoft consensus models in a fuzzy environment. Information Fusion, 17:4–13.
+
+Hiray, S. and Duppada, V. (2017). Agree to disagree: Improving disagreement detection with dual grus. In 2017 Seventh International Conference on Affective Computing and Intelligent Interaction Workshops and Demos (ACIIW), pages 147–152. IEEE.
+
+Hirokawa, R. Y. (1982). Consensus group decision-making, quality of decision, and group satisfaction: An attempt to sort "fact" from "fiction". Communication Studies,33(2):407–415.
+
+Janis, I. L. and Mann, L. (1977).Decision making: A psychological analysis of conflict, choice, and commitment. Free press.
+
+Johnson, D. W. and Johnson, R. (1985). Classroom conflict: Controversy versus debatein learning groups. American Educational Research Journal, 22(2):237–256.
+
+Johnson, D. W. and Johnson, R. T. (1979). Conflict in the classroom: Controversy and learning. Review of educational research, 49(1):51–69.
+
+Kolb, P. (2008). Disco: A multilingual database of distributionally similar words. Proceedings of KONVENS-2008, Berlin, 156.
+
+Levenshtein, V. I. (1966). Binary codes capable of correcting deletions, insertions, and reversals. In Soviet physics doklady, volume 10, pages 707–710.
+
+Lin, D. (1998). Automatic retrieval and clustering of similar words. In COLING 1998 Volume 2: The 17th International Conference on Computational Linguistics, volume 2.
+
+Miller, G. (1998).WordNet: An electronic lexical database. MIT press.
+
+Opitz, B. and Zirn, C. (2013). Bootstrapping an unsupervised approach for classifying agreement and disagreement. In Proceedings of the 19th Nordic Conference of Computational Linguistics (NODALIDA 2013), pages 253–265.
+
+Pérez, I. J., Cabrerizo, F. J., Alonso, S., Dong, Y., Chiclana, F., and Herrera-Viedma, E.(2018). On dynamic consensus processes in group decision making problems. Information Sciences, 459:20–35.
+
+Potash, P. and Rumshisky, A. (2017). Towards debate automation: a recurrent modelfor predicting debate winners. In Proceedings of the 2017 Conference on Empirical Methods in Natural Language Processing, pages 2465–2475.
+
+Qiu, M. and Jiang, J. (2013). A latent variable model for viewpoint discovery from threaded forum posts. In Proceedings of the 2013 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, pages 1031–1040.
+
+Rosenthal, S. and McKeown, K. (2015). I couldn’t agree more: The role of conversational structure in agreement and disagreement detection in online discussions. In Proceedings of the 16th Annual Meeting of the Special Interest Group on Discourse and Dialogue, pages 168–177.
+
+Seerat, B. and Azam, F. (2012). Opinion mining: Issues and challenges (a survey). International Journal of Computer Applications, 49(9).
+
+Skeppstedt, M., Sahlgren, M., Paradis, C., and Kerren, A. (2016). Unshared task: (dis)agreement in online debates. In Proceedings of the Third Workshop on Argument Mining (ArgMining2016), pages 154–159.
+
+Sridhar, D., Foulds, J., Huang, B., Getoor, L., and Walker, M. (2015). Joint models of disagreement and stance in online debate. In Proceedings of the 53rd Annual Meeting of the Association for Computational Linguistics and the 7th International Joint Conference on Natural Language Processing (Volume 1: Long Papers), volume 1, pages116–125.
+
+Tan, C., Niculae, V., Danescu-Niculescu-Mizil, C., and Lee, L. (2016). Winning arguments: Interaction dynamics and persuasion strategies in good-faith online discussions. In Proceedings of the 25th international conference on world wide web, pages613–624. International World Wide Web Conferences Steering Committee.
+
+Tolmie, P., Procter, R., Rouncefield, M., Liakata, M., and Zubiaga, A. (2018). Microblog analysis as a program of work. ACM Transactions on Social Computing, 1(1):2.
+
+Trimbur, J. (1989). Consensus and difference in collaborative learning. College English, 51(6):602–616.
+
+Van Knippenberg, D., De Dreu, C. K., and Homan, A. C. (2004). Work group diversityand group performance: an integrative model and research agenda. Journal of applied psychology, 89(6):1008.
+
+Vinodhini, G. and Chandrasekaran, R. (2012). Sentiment analysis and opinion mining: a survey. International Journal, 2(6):282–292.
+
+Wang, L. and Cardie, C. (2016). Improving agreement and disagreement identification in online discussions with a socially-tuned sentiment lexicon. arXiv:1606.05706.
+
+Yin, J., Thomas, P., Narang, N., and Paris, C. (2012). Unifying local and global agreementand disagreement classification in online debates. In Proceedings of the 3rd Workshopin Computational Approaches to Subjectivity and Sentiment Analysis, pages 61–69. Association for Computational Linguistics.
+
+Zimmerman, B. J. and Schunk, D. H. (2001). Self-regulated learning and academic achievement: Theoretical perspectives. Routledge.
+
+Zubiaga, A., Kochkina, E., Liakata, M., Procter, R., and Lukasik, M. (2016). Stance classification in rumours as a sequential task exploiting the tree structure of social media conversations. arXiv:1609.09028.
