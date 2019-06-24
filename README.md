@@ -53,7 +53,7 @@ Extrair opiniões e preferências a partir de dados textuais é um problema que 
 
 **Damerau-Levenshtein:** A distância de Damerau-Levenshtein [Damerau 1964,Levenshtein 1966], também conhecida como distância de edição, é a diferença entre duas cadeias de caracteres. Tal diferença é medida em quantos caracteres precisam ser eliminados de ambas para que estas se tornem iguais, conforme Equação 1.
 
-![Damerau-Levenshtein](https://github.com/tiago-clementino/consensus_x_quality/raw/master/images/lev.gif)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(1)
+![Damerau-Levenshtein](https://drive.google.com/uc?export=view&id=1wVqEaX97AtCTcPCnUT8ksSwx6BfIEqjA)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(1)
 
 Sendo *a* e *b* duas cadeias de caracteres e as operações ![a-1](https://github.com/tiago-clementino/consensus_x_quality/raw/master/images/a_1.gif) ou ![b-1](https://github.com/tiago-clementino/consensus_x_quality/raw/master/images/b_1.gif) correspondem à eliminação de um caractere.
 
