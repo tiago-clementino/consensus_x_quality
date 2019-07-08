@@ -1,0 +1,900 @@
+---
+title: "Consenso X Qualidade"
+subtitle: "Inferência via IC e Regressão Logística"
+author:
+- name: "Tiago Clementino"
+date: "`r format(Sys.Date(), '%d de %B de %Y')`"
+output:
+  prettydoc::html_pretty:
+    toc: true
+    theme: leonids
+    highlight: vignette
+    fig_width: 6 
+    fig_height: 4.5 
+    keep_tex: yes
+vignette: >
+  %\VignetteIndexEntry{Creating Pretty Documents from R Markdown - The Leonids Theme}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+>Resumo
+>
+> Uma opinião consensual é de fato de qualidade? Este trabalho busca responder esta pergunta no âmbito dos fóruns em MOOC. Para tanto, foi utulizada um log de postagens em fóruns na plataforma edX. Para maiores informações, vide `../README.md`
+
+```{r setup, message=FALSE, warning=FALSE, echo=FALSE}
+library(tidyverse)
+library(here)
+library(lubridate)
+library(boot)
+library(gridExtra)
+library(lme4)
+library(lmerTest)
+library(pbkrtest)
+library(plm)
+library(broom)
+```
+
+```{r read, include=FALSE}
+threads_ed = read_csv(here::here("data/threads_4_ed.csv"))
+threads_disco = read_csv(here::here("data/threads_4_disco.csv"))
+threads_wordnet = read_csv(here::here("data/threads_4_wordnet.csv"))
+```
+# Objetivo
+
+Este repositório oferece o ferramental necessário a medir a correlação entre consenso e qualidade em discussões online a partir de uma base de dados de postagens de fóruns educacionais oriundos de 12 MOOC diferentes oferecidos pela Universidade de Stanford (www.stanford.edu) na plataforma edX (www.edx.org). O consenso entre estas postagens em cada discussão foi calculado com base em três diferentes métricas de distância textual para avaliar o ruído introduzido por tais métricas.
+
+Após conhecer o consenso e a qualidade das discussões por toda a base de dados, segui-se à análise estatística de tais dados. Para tanto, estes relatórios oferecem o ferramental necessário - além de uma breve descrição - para um estudo preliminar envolvendo intervalo de confiança e Bootstraping a partir da média de apoio dos instrutores à decisão consensual e outro mais aprofundado com base em Regressão Logística. Com isto, pode-se observar indícios de que o consenso tem efeito negativo na qualidade da decisão.
+
+### Dados
+
+Os dados originais e já tratados utilizados nesta pesquisa estão disponíveis na pasta `./data`. Os três arquivos `out_DISCO.csv`, `out_editiondistance.csv` e `out_wordnet.csv`, um para cada métrica de distância~-~conforme descrito em `../README.md`~-~apresentam os dados originais. Já os dados tratados estão disponíveis nos arquivos `threads_4_ed.csv`, `threads_4_disco.csv` e `threads_4_wordnet.csv`. Tais dados são fruto de discussões em fóruns de 12 MOOC ofertados em Inglês pela Universidade de Stanford na plataforma edX entre 2013 e 2015. Tais MOOC abrangiam três áreas do conhecimento: Ciências Humanas, Medicina e Educação; totalizando 29.604 postagens agrupadas em 22.804 discussões. As discussões podem ainda ser divididas do seguinte modo: 20.268 tendo apenas uma postagem; 2.208 tendo entre 2 e 5 postagens; 179 tendo entre 6 e 10 postagens; e 48 com mais de 11 postagens. Aqui, apenas as discussões com pelo menos duas postagens foram utilizadas. 
+
+Todos os dados estão no formato CSV (separado por ponto e vírgula). Os dados tratados apresentam os seguintes campos:
+
+| Campo                     | Tipo     | Descrição                                                                                                 |
+|---------------------------|----------|-----------------------------------------------------------------------------------------------------------|
+| `commentthreadid`         | string   | ID da primeira postagem. Identifica a discussão.                                                          |
+| `forumpostid`             | string   | ID da postagem.                                                                                           |
+| `forumuid`                | string   | ID do usuário.                                                                                            |
+| `staffcandidate`          | boolean  | Aponta que a postagem pode ser de um instrutor com base em verificação automática (palavras chave).       |
+| `staff`                   | boolean  | Todas as `staffcandidate` são verificadas manualmente e aquelas confirmada são apontadas aqui.            |
+| `nonstaff`                | boolean  | `staffcandidate` rejeitadas por checagem manual são apontadas aqui                                        |
+| `Confusion`               | number   | Aponta o nível de convicção (confusão^{-1}) apresentado pelo usuário na postagem `[0,0;1,0]`.             |
+| `Urgency`                 | number   | Não utilizado                                                                                             |
+| `Opinion`                 | boolean  | Aponta se a postagem é ou não uma opinião.                                                                |
+| `Question`                | boolean  | Não utilizado                                                                                             |
+| `Answer`                  | boolean  | Não utilizado                                                                                             |
+| `demandreview`            | boolean  | Não utilizado                                                                                             |
+| `createdat`               | datetime | Data de postagem `DD/MM/AAAA HH:MI`                                                                       |
+| `staffcandidatepresence`  | boolean  | Aponta se há algum `staffcandidate` na discussão                                                          |
+| `countopinions`           | integer  | Total de opiniões da discussão                                                                            |
+| `confusionaverage`        | number   | Convicção (confusão^{-1}) média da discussão                                                              |
+| `confusionmedian`         | number   | Não utilizado                                                                                             |
+| `minconfusion`            | number   | Não utilizado                                                                                             |
+| `maxconfusion`            | number   | Não utilizado                                                                                             |
+| `urgencyaverage`          | number   | Não utilizado                                                                                             |
+| `urgencymedian`           | number   | Não utilizado                                                                                             |
+| `minurgency`              | number   | Não utilizado                                                                                             |
+| `maxurgency`              | number   | Não utilizado                                                                                             |
+| `sentimentaverage`        | number   | Não utilizado                                                                                             |
+| `sentimentmedian`         | number   | Não utilizado                                                                                             |
+| `minsentiment`            | number   | Não utilizado                                                                                             |
+| `maxsentiment`            | number   | Não utilizado                                                                                             |
+| `consensus`               | number   | Nível de consenso da discussão `[0,0;1,0]`.                                                               |
+| `agregatedstatus`         | number   | Não utilizado                                                                                             |
+| `firstopinionid`          | string   | ID da opinião de maior consenso                                                                           |
+| `firstopinionsimilarity`  | number   | Taxa de similaridade entre a opinião de maior consenso e a postagem corrente.                             |
+| `opinionproximity`        | number   | Similaridade média entre as opiniões da discussão.                                                        |
+| `Text`                    | string   | Não utilizado                                                                                             |
+| `upcount`                 | integer  | Não utilizado                                                                                             |
+| `reads`                   | integer  | Não utilizado                                                                                             |
+| `CourseType`              | string   | Não utilizado                                                                                             |
+| `coursedisplayname`       | string   | Não utilizado                                                                                             |
+| `posttype`                | string   | Não utilizado                                                                                             |
+| `anonymous`               | boolean  | Não utilizado                                                                                             |
+| `anonymoustopeers`        | boolean  | Não utilizado                                                                                             |
+| `opinions`                | integer  | Não utilizado                                                                                             |
+| `demandreviewreason`      | string   | Não utilizado                                                                                             |
+| `staffright`              | boolean  | Aponta se os instrutores concordam (em média) com a opinião consensual {0,1}                              |
+| `staffcount`              | integer  | Total de instrutores                                                                                      |
+| `opinionmode`             | integer  | Não utilizado                                                                                             |
+| `iamright`                | boolean  | Aponta se a postagem corrente apoia a opinião consensual                                                  |
+| `total_posts`             | integer  | Total de postagens da discussão                                                                           |
+| `iagree_1`                | integer  | Modelo de calculo do apoio dos instrutores 01 *                                                           |
+| `iagree_2`                | integer  | Modelo de calculo do apoio dos instrutores 02 *                                                           |
+| `iagree_3`                | integer  | Modelo de calculo do apoio dos instrutores 03 *                                                           |
+| `iagree_4`                | integer  | Modelo de calculo do apoio dos instrutores 04 *                                                           |
+| `iagree_5`                | integer  | Modelo de calculo do apoio dos instrutores 05 *                                                           |
+| `post_class`              | string   | Divide as discussões em classes de quantidade de postagens **                                             |
+| `consensus_2`             | number   | Modelo de calculo do apoio dos instrutores 02 *                                                           |
+| `consensus_3`             | number   | Modelo de calculo do apoio dos instrutores 03 *                                                           |
+| `consensus_4`             | number   | Modelo de calculo do apoio dos instrutores 04 *                                                           |
+
+*Para maiores detalhes a respeito dos modelos de cálculo do apoio dos instrutores ao consenso ou até do próprio consenso, observe o arquivo: `../code/data_treatment.R`
+
+**Para entender a divisão das discussões em quantidades de postagens vide `../../README.md`.
+
+
+# O código
+
+
+### Q1. Qual é a *clickthrough rate* geral diária? Como isto varia entre os grupos?
+
+
+```{r}
+
+funcao_bootstrap_1_geral <- function(dado, indices){
+    d = dado %>% 
+      slice(indices) %>% 
+      summarise(iagree_42 = mean(iagree_4)) %>% 
+      pull(iagree_42)   
+    return(median(d[1]))
+}
+
+R_ = 1000
+
+#as três linhas abaixo podem ou não ser comentadas a depender do que pretende fazer com a variável post_class
+threads_ed=threads_ed%>% filter(post_class == 0)
+threads_disco=threads_disco%>%   filter(post_class == 0)
+threads_wordnet=threads_wordnet%>% filter(post_class == 0)
+
+bootstraps_1_geral <- boot(data = threads_ed, 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_low_consensus <- boot(data = threads_ed %>% 
+                        filter(consensus>=0.7), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_mean_consensus <- boot(data = threads_ed %>% 
+                        filter(consensus>=0.8), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_righ_consensus <- boot(data = threads_ed %>% 
+                        filter(consensus>=0.9), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_confusion <- boot(data = threads_ed%>% 
+                        filter(confusionaverage>0.6), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_non_confusion <- boot(data = threads_ed%>% 
+                        filter(confusionaverage<=0.6), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_low_consensus_confusion <- boot(data = threads_ed%>% 
+                        filter(consensus<0.7), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+```
+
+```{r}
+
+
+bootstraps_1_geral_disco <- boot(data = threads_disco, 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_low_consensus_disco <- boot(data = threads_disco %>% 
+                        filter(consensus>=0.7), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_mean_consensus_disco <- boot(data = threads_disco %>% 
+                        filter(consensus>=0.8), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_righ_consensus_disco <- boot(data = threads_disco %>% 
+                        filter(consensus>=0.9), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_confusion_disco <- boot(data = threads_disco%>% 
+                        filter(confusionaverage>0.6), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_non_confusion_disco <- boot(data = threads_disco%>% 
+                        filter(confusionaverage<=0.6), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_low_consensus_confusion_disco <- boot(data = threads_disco%>% 
+                        filter(consensus<0.7), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+```
+
+```{r}
+
+
+bootstraps_1_geral_wordnet <- boot(data = threads_wordnet, 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_low_consensus_wordnet <- boot(data = threads_wordnet %>% 
+                        filter(consensus>=0.7), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_mean_consensus_wordnet <- boot(data = threads_wordnet %>% 
+                        filter(consensus>=0.8), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_righ_consensus_wordnet <- boot(data = threads_wordnet %>% 
+                        filter(consensus>=0.9), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_confusion_wordnet <- boot(data = threads_wordnet%>% 
+                        filter(confusionaverage>0.6), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_non_confusion_wordnet <- boot(data = threads_wordnet%>% 
+                        filter(confusionaverage<=0.6), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+bootstraps_1_low_consensus_confusion_wordnet <- boot(data = threads_wordnet%>% 
+                        filter(consensus<0.7), 
+                   statistic = funcao_bootstrap_1_geral,
+                   R = R_) 
+
+```
+
+
+```{r}
+
+threads_ %>% 
+    group_by(total_posts) %>% 
+    summarise(contagem = n(),
+              posts = if(total_posts<=5) 1 else 0) %>% 
+    group_by(posts) %>% 
+    summarise(contagem = sum(contagem)) %>% 
+    ggplot(aes(x = posts, y = contagem, label=contagem)) + 
+  geom_bar(stat = "identity") +
+    geom_text(color = "darkcyan") + 
+    labs(x=NULL,  
+         y="Densidade", 
+         title="Baixo Consenso", 
+         subtitle="(staff, density)", 
+         legend='apoio') +
+    #scale_x_continuous()+#labels = NULL,breaks=NULL) +
+    #scale_y_continuous()+#labels = NULL,breaks=NULL) +
+    theme(plot.title = element_text(face="bold",size = "12"),
+          plot.subtitle = element_text(size = "10"),
+          plot.caption = element_text(size="10"),
+          axis.title.y = element_text(size="12"),
+          axis.text.x = element_text(size="10"),
+          axis.text.y = element_text(size="12"),
+          legend.position="none",
+          panel.border=element_blank())
+
+populacao_aux = threads_ed
+populacao_aux$name = 'Geral'
+populacao = populacao_aux
+populacao_aux = threads_ed %>%filter(consensus>=0.7)
+populacao_aux$name = 'Baixo Consenso'
+populacao = bind_rows(populacao,populacao_aux)
+populacao_aux = threads_ed %>%filter(consensus>=0.8)
+populacao_aux$name = 'Médio Consenso'
+populacao = bind_rows(populacao,populacao_aux)
+populacao_aux = threads_ed %>%filter(consensus>=0.9)
+populacao_aux$name = 'Alto Consenso'
+populacao = bind_rows(populacao,populacao_aux)
+populacao_aux = threads_ed %>%filter(confusionaverage>4.0)
+populacao_aux$name = 'Alta Confusão'
+populacao = bind_rows(populacao,populacao_aux)
+populacao_aux = threads_ed %>%filter(confusionaverage<=4.0)
+populacao_aux$name = 'Baixa Confusão'
+populacao = bind_rows(populacao,populacao_aux)
+
+populacao %>% 
+    group_by(name,iagree_3) %>% 
+    summarise(contagem = n()) %>% 
+    ggplot(aes(x = name, y = contagem)) + 
+    geom_col(color = "darkcyan") + 
+    labs(x=NULL,  
+         y="Densidade", 
+         title="Baixo Consenso", 
+         subtitle="(staff, density)", 
+         legend='apoio') +
+    theme(plot.title = element_text(face="bold",size = "12"),
+          plot.subtitle = element_text(size = "10"),
+          plot.caption = element_text(size="10"),
+          axis.title.y = element_text(size="12"),
+          axis.text.x = element_text(size="10"),
+          axis.text.y = element_text(size="12"),
+          legend.position="none",
+          panel.border=element_blank())
+
+```
+
+
+```{r}
+
+populacao_aux = threads_disco
+populacao_aux$name = 'Geral'
+populacao = populacao_aux
+populacao_aux = threads_disco %>%filter(consensus>=0.7)
+populacao_aux$name = 'Baixo Consenso'
+populacao = bind_rows(populacao,populacao_aux)
+populacao_aux = threads_disco %>%filter(consensus>=0.8)
+populacao_aux$name = 'Médio Consenso'
+populacao = bind_rows(populacao,populacao_aux)
+populacao_aux = threads_disco %>%filter(consensus>=0.9)
+populacao_aux$name = 'Alto Consenso'
+populacao = bind_rows(populacao,populacao_aux)
+populacao_aux = threads_disco %>%filter(confusionaverage>4.0)
+populacao_aux$name = 'Alta Confusão'
+populacao = bind_rows(populacao,populacao_aux)
+populacao_aux = threads_disco %>%filter(confusionaverage<=4.0)
+populacao_aux$name = 'Baixa Confusão'
+populacao = bind_rows(populacao,populacao_aux)
+
+populacao %>% 
+    group_by(name,iagree_3) %>% 
+    summarise(contagem = n()) %>% 
+    ggplot(aes(x = name, y = contagem, fill=iagree_3)) + 
+    geom_col(color = "darkcyan") + 
+    labs(x=NULL,  
+         y="Densidade", 
+         title="Baixo Consenso", 
+         subtitle="(staff, density)", 
+         legend='apoio') +
+    theme(plot.title = element_text(face="bold",size = "12"),
+          plot.subtitle = element_text(size = "10"),
+          plot.caption = element_text(size="10"),
+          axis.title.y = element_text(size="12"),
+          axis.text.x = element_text(size="10"),
+          axis.text.y = element_text(size="12"),
+          legend.position="none",
+          panel.border=element_blank())
+
+
+```
+
+
+```{r}
+
+populacao_aux = threads_wordnet
+populacao_aux$name = 'Geral'
+populacao = populacao_aux
+populacao_aux = threads_wordnet %>%filter(consensus>=0.7)
+populacao_aux$name = 'Baixo Consenso'
+populacao = bind_rows(populacao,populacao_aux)
+populacao_aux = threads_wordnet %>%filter(consensus>=0.8)
+populacao_aux$name = 'Médio Consenso'
+populacao = bind_rows(populacao,populacao_aux)
+populacao_aux = threads_wordnet %>%filter(consensus>=0.9)
+populacao_aux$name = 'Alto Consenso'
+populacao = bind_rows(populacao,populacao_aux)
+populacao_aux = threads_wordnet %>%filter(confusionaverage>4.0)
+populacao_aux$name = 'Alta Confusão'
+populacao = bind_rows(populacao,populacao_aux)
+populacao_aux = threads_wordnet %>%filter(confusionaverage<=4.0)
+populacao_aux$name = 'Baixa Confusão'
+populacao = bind_rows(populacao,populacao_aux)
+
+populacao %>% 
+    group_by(name,iagree_3) %>% 
+    summarise(contagem = n()) %>% 
+    ggplot(aes(x = name, y = contagem, fill=iagree_3)) + 
+    geom_col(color = "darkcyan") + 
+    labs(x=NULL,  
+         y="Densidade", 
+         title="Baixo Consenso", 
+         subtitle="(staff, density)", 
+         legend='apoio') +
+    theme(plot.title = element_text(face="bold",size = "12"),
+          plot.subtitle = element_text(size = "10"),
+          plot.caption = element_text(size="10"),
+          axis.title.y = element_text(size="12"),
+          axis.text.x = element_text(size="10"),
+          axis.text.y = element_text(size="12"),
+          legend.position="none",
+          panel.border=element_blank())
+
+
+```
+
+
+```{r }
+
+funcao_distribution <- function(statistics_1,statistics_2,statistics_3,statistics_4){
+    p1 <- tibble(estatistica = as.double(statistics_1$t)) %>%
+      ggplot(aes(x = estatistica)) + 
+      geom_histogram(binwidth = .001, fill = "white", color="blue") + 
+        labs(x="'clickthrough rate'",  
+            y=NULL, 
+            title="Distribuição da 'clickthrough rate'", 
+            caption="Wikimedia Foundation") +
+        theme(plot.title = element_text(face="bold",size = "12"),
+            plot.caption = element_text(size="9"),
+            axis.title.x = element_text(size="10"),
+            axis.text.x = element_text(size="9"),
+            axis.text.y = element_text(size="10"),
+            panel.border=element_blank())    
+    
+    p2 <- tibble(estatistica = as.double(statistics_2$t)) %>% 
+      ggplot(aes(x = estatistica)) + 
+      geom_histogram(binwidth = .001, fill = "white", color="blue")  + 
+        labs(x="'clickthrough rate' para o grupo 'a'",  
+            y=NULL, 
+            title="Distribuição da 'clickthrough rate'", 
+            caption="Wikimedia Foundation") +
+        theme(plot.title = element_text(face="bold",size = "12"),
+            plot.caption = element_text(size="9"),
+            axis.title.x = element_text(size="10"),
+            axis.text.x = element_text(size="9"),
+            axis.text.y = element_text(size="10"),
+            panel.border=element_blank()) 
+    
+    p3 <- tibble(estatistica = as.double(statistics_3$t)) %>% 
+      ggplot(aes(x = estatistica)) + 
+      geom_histogram(binwidth = .001, fill = "white", color="blue") + 
+        labs(x="'clickthrough rate' para o grupo 'b'", 
+            y=NULL, 
+            title="Distribuição da 'clickthrough rate'", 
+            caption="Wikimedia Foundation") +
+        theme(plot.title = element_text(face="bold",size = "12"),
+            plot.caption = element_text(size="9"),
+            axis.title.x = element_text(size="10"),
+            axis.text.x = element_text(size="9"),
+            axis.text.y = element_text(size="10"),
+            panel.border=element_blank()) 
+    
+    p4 <- tibble(estatistica = as.double(statistics_4$t)) %>% 
+      ggplot(aes(x = estatistica)) + 
+      geom_histogram(binwidth = .001, fill = "white", color="blue") + 
+        labs(x="diferença entre 'a' e 'b'", 
+            y=NULL, 
+            title="Distribuição da diferença de buscas vazias", 
+            caption="Wikimedia Foundation") +
+        theme(plot.title = element_text(face="bold",size = "12"),
+            plot.caption = element_text(size="9"),
+            axis.title.x = element_text(size="10"),
+            axis.text.x = element_text(size="9"),
+            axis.text.y = element_text(size="10"),
+            panel.border=element_blank()) 
+    grid.arrange(arrangeGrob(p1,p4,ncol=2,widths=c(2,2)),
+        arrangeGrob(p2,p3,ncol=2,widths=c(2,2)),
+        heights=c(2,2))
+}
+
+```
+
+
+```{r}
+
+funcao_distribution(bootstraps_1_geral,bootstraps_1_low_consensus,bootstraps_1_mean_consensus,bootstraps_1_righ_consensus)
+
+```
+
+
+```{r}
+
+funcao_distribution(bootstraps_1_geral,bootstraps_1_confusion,bootstraps_1_non_confusion,bootstraps_1_low_consensus_confusion)
+
+
+```
+
+
+```{r}
+
+funcao_distribution(bootstraps_1_geral_disco,bootstraps_1_low_consensus_disco,bootstraps_1_mean_consensus_disco,bootstraps_1_righ_consensus_disco)
+
+```
+
+
+```{r}
+
+funcao_distribution(bootstraps_1_geral_disco,bootstraps_1_confusion_disco,bootstraps_1_non_confusion_disco,bootstraps_1_low_consensus_confusion_disco)
+
+
+```
+
+```{r}
+
+funcao_distribution(bootstraps_1_geral_wordnet,bootstraps_1_low_consensus_wordnet,bootstraps_1_mean_consensus_wordnet,bootstraps_1_righ_consensus_wordnet)
+
+```
+
+
+```{r}
+
+funcao_distribution(bootstraps_1_geral_wordnet,bootstraps_1_confusion_wordnet,bootstraps_1_non_confusion_wordnet,bootstraps_1_low_consensus_confusion_wordnet)
+
+
+```
+
+```{r}
+ci_geral_1 <- boot.ci(bootstraps_1_geral, conf = 0.95, type = "basic")
+ci_low_consensus <- boot.ci(bootstraps_1_low_consensus, conf = 0.95, type = "basic")
+ci_mean_consensus <- boot.ci(bootstraps_1_mean_consensus, conf = 0.95, type = "basic")
+ci_righ_consensus <- boot.ci(bootstraps_1_righ_consensus, conf = 0.95, type = "basic")
+ci_confusion <- boot.ci(bootstraps_1_confusion, conf = 0.95, type = "basic")
+ci_non_confusion <- boot.ci(bootstraps_1_non_confusion, conf = 0.95, type = "basic")
+
+ci_1_ <- tibble(estatistica = as.double(ci_geral_1$t0),basic_1 = as.double(ci_geral_1$basic[4]), basic_2 = as.double(ci_geral_1$basic[5]), name = 'Geral') 
+
+ci_1_mean_consensus <- tibble(estatistica = as.double(ci_mean_consensus$t0),basic_1 = as.double(ci_mean_consensus$basic[4]), basic_2 = as.double(ci_mean_consensus$basic[5]), name = 'Baixo consenso')
+ci_1_righ_consensus <- tibble(estatistica = as.double(ci_righ_consensus$t0),basic_1 = as.double(ci_righ_consensus$basic[4]), basic_2 = as.double(ci_righ_consensus$basic[5]), name = 'Alto consenso')
+ci_1_confusion <- tibble(estatistica = as.double(ci_confusion$t0),basic_1 = as.double(ci_confusion$basic[4]), basic_2 = as.double(ci_confusion$basic[5]), name = 'Alta convicção')
+ci_1_non_confusion <- tibble(estatistica = as.double(ci_non_confusion$t0),basic_1 = as.double(ci_non_confusion$basic[4]), basic_2 = as.double(ci_non_confusion$basic[5]), name = 'Baixa convicção')
+
+populacao_1 = bind_rows(ci_1_, ci_1_mean_consensus, ci_1_righ_consensus, ci_1_confusion, ci_1_non_confusion)#, ci_1_low_consensus_confusion)
+populacao_1$model = "Edição"
+
+png(filename="/Users/tclem/Documents/gits/travistorrent-eda/data/plot_ed_0.png")
+
+ggplot(populacao_1, aes(y=estatistica, x=name)) + 
+  geom_point(size=3) + # point for group mean
+  geom_errorbar(aes(ymax=basic_2, ymin=basic_1), width=0.2) + 
+    labs(x=NULL,  
+        y="Taxa de apoio", 
+        title=NULL,#title="Apoio do 'staff' ao consenso", 
+        subtitle="(G)",#subtitle="(Categoria, 'Taxa de apoio')", 
+        caption=NULL) +
+    theme(plot.title = element_text(face="bold",size = "15"),
+        plot.subtitle = element_text(size = "10"),
+        plot.caption = element_text(size="10"),
+        axis.title.y = element_text(size="12"),
+        axis.text.x = element_text(angle=10, hjust=1, size="12"),
+        axis.text.y = element_text(size="12"),
+        panel.border=element_blank())
+
+
+
+```
+```{r}
+ci_geral_1 <- boot.ci(bootstraps_1_geral_wordnet, conf = 0.95, type = "basic")
+ci_low_consensus <- boot.ci(bootstraps_1_low_consensus_wordnet, conf = 0.95, type = "basic")
+ci_mean_consensus <- boot.ci(bootstraps_1_mean_consensus_wordnet, conf = 0.95, type = "basic")
+ci_righ_consensus <- boot.ci(bootstraps_1_righ_consensus_wordnet, conf = 0.95, type = "basic")
+ci_confusion <- boot.ci(bootstraps_1_confusion_wordnet, conf = 0.95, type = "basic")
+ci_non_confusion <- boot.ci(bootstraps_1_non_confusion_wordnet, conf = 0.95, type = "basic")
+
+ci_1_ <- tibble(estatistica = as.double(ci_geral_1$t0),basic_1 = as.double(ci_geral_1$basic[4]), basic_2 = as.double(ci_geral_1$basic[5]), name = 'Geral') 
+ci_1_mean_consensus <- tibble(estatistica = as.double(ci_mean_consensus$t0),basic_1 = as.double(ci_mean_consensus$basic[4]), basic_2 = as.double(ci_mean_consensus$basic[5]), name = 'Baixo consenso')
+ci_1_righ_consensus <- tibble(estatistica = as.double(ci_righ_consensus$t0),basic_1 = as.double(ci_righ_consensus$basic[4]), basic_2 = as.double(ci_righ_consensus$basic[5]), name = 'Alto consenso')
+ci_1_confusion <- tibble(estatistica = as.double(ci_confusion$t0),basic_1 = as.double(ci_confusion$basic[4]), basic_2 = as.double(ci_confusion$basic[5]), name = 'Alta convicção')
+ci_1_non_confusion <- tibble(estatistica = as.double(ci_non_confusion$t0),basic_1 = as.double(ci_non_confusion$basic[4]), basic_2 = as.double(ci_non_confusion$basic[5]), name = 'Baixa convicção')
+
+
+populacao_1_aux = bind_rows(ci_1_, ci_1_mean_consensus, ci_1_righ_consensus, ci_1_confusion, ci_1_non_confusion)#, ci_1_low_consensus_confusion)
+populacao_1_aux$model = "Wordnet"
+populacao_1 = bind_rows(populacao_1,populacao_1_aux)
+
+png(filename="/Users/tclem/Documents/gits/travistorrent-eda/data/plot_wordnet_0.png")
+
+ggplot(populacao_1, aes(y=estatistica, x=name)) + 
+  geom_point(size=3) + # point for group mean
+  geom_errorbar(aes(ymax=basic_2, ymin=basic_1), width=0.2) + 
+    labs(x=NULL,  
+        y="Taxa de apoio", 
+        title="(H)",#title="Apoio do 'staff' ao consenso", 
+        subtitle=NULL,#subtitle="(Categoria, 'Taxa de apoio')", 
+        caption=NULL) +
+    theme(plot.title = element_text(face="bold",size = "15"),
+        plot.subtitle = element_text(size = "10"),
+        plot.caption = element_text(size="10"),
+        axis.title.y = element_text(size="12"),
+        axis.text.x = element_text(angle=10, hjust=1, size="12"),
+        axis.text.y = element_text(size="12"),
+        panel.border=element_blank())
+
+
+
+```
+```{r}
+ci_geral_1 <- boot.ci(bootstraps_1_geral_disco, conf = 0.95, type = "basic")
+ci_low_consensus <- boot.ci(bootstraps_1_low_consensus_disco, conf = 0.95, type = "basic")
+ci_mean_consensus <- boot.ci(bootstraps_1_mean_consensus_disco, conf = 0.95, type = "basic")
+ci_righ_consensus <- boot.ci(bootstraps_1_righ_consensus_disco, conf = 0.95, type = "basic")
+ci_confusion <- boot.ci(bootstraps_1_confusion_disco, conf = 0.95, type = "basic")
+ci_non_confusion <- boot.ci(bootstraps_1_non_confusion_disco, conf = 0.95, type = "basic")
+
+ci_1_ <- tibble(estatistica = as.double(ci_geral_1$t0),basic_1 = as.double(ci_geral_1$basic[4]), basic_2 = as.double(ci_geral_1$basic[5]), name = 'Geral') 
+ci_1_mean_consensus <- tibble(estatistica = as.double(ci_mean_consensus$t0),basic_1 = as.double(ci_mean_consensus$basic[4]), basic_2 = as.double(ci_mean_consensus$basic[5]), name = 'Baixo consenso')
+ci_1_righ_consensus <- tibble(estatistica = as.double(ci_righ_consensus$t0),basic_1 = as.double(ci_righ_consensus$basic[4]), basic_2 = as.double(ci_righ_consensus$basic[5]), name = 'Alto consenso')
+ci_1_confusion <- tibble(estatistica = as.double(ci_confusion$t0),basic_1 = as.double(ci_confusion$basic[4]), basic_2 = as.double(ci_confusion$basic[5]), name = 'Alta convicção')
+ci_1_non_confusion <- tibble(estatistica = as.double(ci_non_confusion$t0),basic_1 = as.double(ci_non_confusion$basic[4]), basic_2 = as.double(ci_non_confusion$basic[5]), name = 'Baixa convicção')
+
+populacao_1_aux = bind_rows(ci_1_, ci_1_mean_consensus, ci_1_righ_consensus, ci_1_confusion, ci_1_non_confusion)#, ci_1_low_consensus_confusion)
+populacao_1_aux$model = "DISCO"
+populacao_1 = bind_rows(populacao_1,populacao_1_aux)
+
+png(filename="/Users/tclem/Documents/gits/travistorrent-eda/data/plot_disco_0.png")
+
+
+ggplot(populacao_1, aes(y=estatistica, x=name)) + 
+  geom_point(size=3) + # point for group mean
+  geom_errorbar(aes(ymax=basic_2, ymin=basic_1), width=0.2) + 
+    labs(x=NULL,  
+        y="Taxa de apoio", 
+        title="(I)",#title="Apoio do 'staff' ao consenso", 
+        subtitle=NULL,#subtitle="(Categoria, 'Taxa de apoio')", 
+        caption=NULL) +
+    theme(plot.title = element_text(face="bold",size = "15"),
+        plot.subtitle = element_text(size = "10"),
+        plot.caption = element_text(size="10"),
+        axis.title.y = element_text(size="12"),
+        axis.text.x = element_text(angle=10, hjust=1, size="12"),
+        axis.text.y = element_text(size="12"),
+        panel.border=element_blank())
+
+
+
+```
+```{r}
+
+threads_ed$model = "Edição"
+threads_disco$model = "Wordnet"
+threads_wordnet$model = "DISCO"
+
+threads_ = bind_rows(threads_ed, threads_disco, threads_wordnet)
+```
+
+```{r}
+
+png(filename="/Users/tclem/Documents/gits/travistorrent-eda/data/plot.png")
+
+ggplot(populacao_1, aes(y=estatistica, x=name)) + 
+  geom_point(size=5, aes(shape = model), position=position_dodge(width=0.5)) + # point for group mean
+  geom_errorbar(aes(ymax=basic_2, ymin=basic_1, shape = model), width=0.5, position=position_dodge(width=0.5)) +
+  geom_hline(aes(yintercept = 0.5), linetype = "dashed") + 
+    labs(x=NULL,  
+        y="Taxa de apoio", 
+        title="(C)",#title="Apoio do 'staff' ao consenso", 
+        subtitle="Seis ou mais postagens",#subtitle="(Categoria, 'Taxa de apoio')", 
+        shape="Distância",
+        caption=NULL) +
+    theme(plot.title = element_text(face="bold",size = "20"),
+        plot.subtitle = element_text(size = "15"),
+        plot.caption = element_text(size="10"),
+        legend.text = element_text(size="14"),
+        legend.title = element_text(size="15"),
+        axis.title.y = element_text(size="15"),
+        axis.text.x = element_text(angle=13, hjust=1, size="15"),
+        axis.text.y = element_text(size="12"),
+        panel.border=element_blank())
+
+
+
+```
+
+```{r}
+
+threads_ %>% 
+  filter(iagree_4>=0)%>%
+  ggplot(aes(y = consensus_4, x = iagree_4)) + 
+  #geom_point(alpha = .3) + 
+  geom_jitter(width = .05, alpha = .3) + 
+    labs(y='Consenso >= 0.9',  
+        x="Apio do staff", 
+        title="% de respostas X Avaliação", 
+        subtitle="(cls_perc_eval, score)", caption="Universidade do Texas"
+        ) +
+    theme(plot.title = element_text(face="bold",size = "12"),
+        plot.subtitle = element_text(size = "10"),
+        plot.caption = element_text(size="10"),
+        axis.title.y = element_text(size="12"),
+        axis.text.x = element_text(size="10"),
+        axis.text.y = element_text(size="12"),
+        legend.position="none",
+        panel.border=element_blank())
+
+threads_ %>% 
+  filter(iagree_4>=0)%>%
+  ggplot(aes(y=consensus_4,x=iagree_4))+
+  geom_point()+
+  geom_smooth(method='lm',aes(color="Modelo Linear"),se=F)+
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), aes(color="GLM Binomial"),se=F )+
+  #scale_y_discrete(limits=c(0,1))+
+  xlab("Apoio do staff")+ylab("Consenso >= 0.9")+
+  theme_bw()+  #geom_jitter(width=1,height=0)+
+  scale_color_manual(name="", values=c("blue","red") )
+
+mod_2 <- glmer(consensus_2~iagree_4 + confusionaverage + (1|model) + (1|post_class),threads_%>%filter(iagree_4>=0),family = binomial('logit'),control=glmerControl(check.nlev.gtr.1 = "ignore"))
+mod_3 <- glmer(consensus_3~iagree_4 + confusionaverage + (1|model) + (1|post_class),threads_%>%filter(iagree_4>=0),family = binomial('logit'),control=glmerControl(check.nlev.gtr.1 = "ignore"))
+mod_4 <- glmer(consensus_4~iagree_4 + confusionaverage + (1|model) + (1|post_class),threads_%>%filter(iagree_4>=0),family = binomial('logit'),control=glmerControl(check.nlev.gtr.1 = "ignore"))
+
+```
+
+```{r}
+
+mod
+```
+
+```{r}
+mod_2
+```
+
+```{r}
+summary(mod_2)
+```
+
+```{r}
+summary(mod_3)
+```
+
+```{r}
+summary(mod_4)
+```
+```{r}
+mod_4_fix <- glm(consensus_4~iagree_4 + confusionaverage,threads_%>%filter(iagree_4>=0),family = binomial('logit'))
+summary(mod_4)
+summary(mod_4_fix)
+```
+```{r}
+# The predicted value for this condition: the intercept, plus the dummy coefficient for this condition
+Yhat_rank3 <- coef(mod_4_fix)["(Intercept)"] + coef(mod_4_fix)["iagree_4"]*0.0 +  coef(mod_4_fix)["confusionaverage"]*0
+
+# Converting the predicted value from log odds into percentage
+exp( Yhat_rank3 ) / ( 1 + exp( Yhat_rank3 ) )
+
+# The predicted value for this condition: the intercept, plus the dummy coefficient for this condition
+Yhat_rank3 <- coef(mod_4_fix)["iagree_4"]-coef(mod_4_fix)["(Intercept)"]
+
+# Converting the predicted value from log odds into percentage
+exp( Yhat_rank3 ) / ( 1 + exp( Yhat_rank3 ) )
+
+# The predicted value for this condition: the intercept, plus the dummy coefficient for this condition
+Yhat_rank3 <- coef(mod_4_fix)["confusionaverage"]-coef(mod_4_fix)["(Intercept)"]
+
+# Converting the predicted value from log odds into percentage
+exp( Yhat_rank3 ) / ( 1 + exp( Yhat_rank3 ) )
+
+# The predicted value for this condition: the intercept, plus the dummy coefficient for this condition
+Yhat_rank3 <- coef(mod_4_fix)["(Intercept)"]
+
+# Converting the predicted value from log odds into percentage
+exp( Yhat_rank3 ) / ( 1 + exp( Yhat_rank3 ) )
+
+```
+
+```{r}
+coef(mod_4)
+```
+```{r}
+# The predicted value for this condition: the intercept, plus the dummy coefficient for this condition
+Yhat_rank1 <- 5.281373
+
+# Converting the predicted value from log odds into percentage
+Yhat_rank1 <- exp( Yhat_rank1 ) / ( 1 + exp( Yhat_rank1 ) )
+Yhat_rank1
+# The predicted value for this condition: the intercept, plus the dummy coefficient for this condition
+Yhat_rank2 <- 4.345608
+
+# Converting the predicted value from log odds into percentage
+Yhat_rank2 <- exp( Yhat_rank2 ) / ( 1 + exp( Yhat_rank2 ) )
+Yhat_rank2
+
+Yhat_rankm <- (Yhat_rank1+Yhat_rank2)/2
+Yhat_rankm
+((Yhat_rank1-Yhat_rankm)*(Yhat_rank1-Yhat_rankm)+(Yhat_rank2-Yhat_rankm)*(Yhat_rank2-Yhat_rankm))
+```
+
+```{r}
+# The predicted value for this condition: the intercept, plus the dummy coefficient for this condition
+Yhat_rank1 <- 5.621057
+
+# Converting the predicted value from log odds into percentage
+Yhat_rank1 <- exp( Yhat_rank1 ) / ( 1 + exp( Yhat_rank1 ) )
+Yhat_rank1
+# The predicted value for this condition: the intercept, plus the dummy coefficient for this condition
+Yhat_rank2 <- 4.808490
+
+# Converting the predicted value from log odds into percentage
+Yhat_rank2 <- exp( Yhat_rank2 ) / ( 1 + exp( Yhat_rank2 ) )
+Yhat_rank2
+# The predicted value for this condition: the intercept, plus the dummy coefficient for this condition
+Yhat_rank3 <- 4.010476
+
+# Converting the predicted value from log odds into percentage
+Yhat_rank3 <- exp( Yhat_rank3 ) / ( 1 + exp( Yhat_rank3 ) )
+Yhat_rank3
+
+Yhat_rankm <- (Yhat_rank1+Yhat_rank2+Yhat_rank3)/3
+Yhat_rankm
+((Yhat_rank1-Yhat_rankm)*(Yhat_rank1-Yhat_rankm)+(Yhat_rank2-Yhat_rankm)*(Yhat_rank2-Yhat_rankm)+(Yhat_rank3-Yhat_rankm)*(Yhat_rank3-Yhat_rankm))/2
+```
+
+```{r}
+print(ajuste)
+```
+
+```{r}
+anova(mod,test="LR")
+```
+
+```{r}
+
+
+
+threads_ed %>% 
+  filter(iagree_4>=0)%>%
+  ggplot(aes(y = consensus_4, x = iagree_4)) + 
+  geom_point(alpha = .3) + 
+    labs(y='Consenso >= 0.9',  
+        x="Apio do staff", 
+        title="% de respostas X Avaliação", 
+        subtitle="(cls_perc_eval, score)", caption="Universidade do Texas"
+        ) +
+    theme(plot.title = element_text(face="bold",size = "12"),
+        plot.subtitle = element_text(size = "10"),
+        plot.caption = element_text(size="10"),
+        axis.title.y = element_text(size="12"),
+        axis.text.x = element_text(size="10"),
+        axis.text.y = element_text(size="12"),
+        legend.position="none",
+        panel.border=element_blank())
+
+threads_ed %>% 
+  filter(iagree_4>=0)%>%
+  ggplot(aes(y=consensus_4,x=iagree_4))+
+  geom_point()+
+  geom_smooth(method='lm',aes(color="Modelo Linear"),se=F)+
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), aes(color="GLM Binomial"),se=F )+
+  xlab("Apoio do staff")+ylab("Consenso >= 0.9")+
+  theme_bw()+  #geom_jitter(width=1,height=0)+
+  scale_color_manual(name="", values=c("blue","red") )
+
+
+mod <- glm(consensus~iagree_4 + confusionaverage,threads_ed%>%filter(iagree_4>=0),family = binomial('logit'))
+mod_2 <- glm(consensus_2~iagree_4 + confusionaverage,threads_ed%>%filter(iagree_4>=0),family = binomial('logit'))
+mod_3 <- glm(consensus_3~iagree_4 + confusionaverage,threads_ed%>%filter(iagree_4>=0),family = binomial('logit'))
+mod_4 <- glm(consensus_4~iagree_4 + confusionaverage,threads_ed%>%filter(iagree_4>=0),family = binomial('logit'))
+mod
+mod_2
+mod_3
+mod_4
+summary(mod)
+#mod$coefficients
+#OR1=exp(mod$coefficients);OR1
+ajuste <- mod %>%
+  augment(type.predict = "response") %>%
+  mutate(y_hat = .fitted) %>%  # Valores de probabilidade para cada observacao
+  mutate(odds = y_hat/(1-y_hat)) %>% # Valores de chance para cada observacao (PROBIT)
+  mutate(log_odds =log(odds)) %>%  # Valores de log(chance) para cada observacao (LOGIT)
+  select(iagree_4,consensus,y_hat,odds,log_odds)
+
+print(ajuste)
+anova(mod,test="LR")
+
+ajuste %>% 
+  ggplot(aes(x = iagree_4, y = odds)) +
+  geom_point() + geom_line() +
+  scale_y_continuous("Chance (PROBIT) de ser automático")
+
+
+ajuste %>% 
+  ggplot(aes(x = iagree_4, y = y_hat)) +
+  geom_point() + geom_line() +
+  scale_y_continuous("Probabilidade de ser automático")
+
+
+ajuste %>% 
+  ggplot(aes(x = iagree_4, y = log_odds)) +
+  geom_point() + geom_line() +
+  scale_y_continuous("log(chance) (LOGIT) de ser automático")
+
+
+```
+
+
+# Sumário
+
+Descrição dos gráficos
