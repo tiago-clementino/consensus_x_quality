@@ -106,6 +106,20 @@ Para concluir a análise matemática, assumimos que a opinião apoiada pela maio
 
 Na Equação 8, *l* é a quantidade total de postagens de instrutores para uma certa discussão. Assim, quanto mais apoio dos instrutores, mais qualidade ![q\in 0,0;1,0](https://drive.google.com/uc?export=view&id=1WTW0ZEXwIuzKvhY2jN-7joUuNnBIat8K) agregada. Além disto, o conceito de consenso utilizado para esta análise está definido em ![0,0;1,0](https://drive.google.com/uc?export=view&id=1_wBzT7sXtLPnrsK4s4GjFiPOUjuJIiiX), porém acaba restrito a ![0,5;1,0](https://drive.google.com/uc?export=view&id=1ftPe57DPePFb5FehsqY0rfZqhwGhrfGt), sendo *0,5* o grau de consenso aleatório. Deve-se notar que o consenso abaixo de *0,5* para uma dada opinião significa que há outra opinião contrária acima de *0,5*. Para simplificar os cálculos, normalizamos o consenso em ![0,0;1,0](https://drive.google.com/uc?export=view&id=1_wBzT7sXtLPnrsK4s4GjFiPOUjuJIiiX).
 
+#### *Soft Consensus*: Exemplo
+
+Para aprofundar o entendimento a respeito do modelo de consenso utilizado, tomaremos como exemplo um cenário simples com quatro postagens e apenas uma opinião - que na prática são duas, pois as postagens podem concordar ou discordar dela. Partindo deste pre suposto, revisitaremos cada nível de apoio descrito acima.
+
+ - Nível 1: *Par de Alternativas -* 
+ 
+ - Nível 2: *Opiniões e Postagens -*
+ 
+ - Nível 3: *Postagens e Opiniões -* 
+ 
+ - Nível 4: *Geral -* 
+ 
+Perceba que até este ponto identificar as postagens de instrutores ainda não se mostrou necessário. Por hipótese, considere que a postagem X foi postada por um instrutor.
+
 ## Consenso vs. Qualidade
 
 Com o intuito de medir o grau de certeza por parte do aluno em cada postagem, utilizamos o nível de convicção (ou, o inverso de confusão) médio das postagens, já computado, como um fator moderador em nossa análise. Além disto, o volume de postagens também pode ser fonte de imprecisão em discussões, por isso agrupamos as discussões em nossa base por número de postagens e analisamos tais grupos também separadamente. Agrupamos 4.671 postagens em discussões com número de postagens entre dois e cinco e 4.080 postagens em discussões com mais de seis postagens. Escolhemos estes números para, assim, dividir a base de dados em duas partes aproximadamente iguais. Por fim, estudamos as influências destes fatores em dois níveis de consenso diferentes: 0.8 (baixo) e 0.9 (alto), por serem mais recorrentes na literatura de consenso.
