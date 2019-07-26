@@ -132,8 +132,8 @@ e a segunda matriz em função das postagens, veja abaixo
  ![\Phi_{1,2}(sp^{i,j}_{1,2})=\begin{bmatrix}- & 0,11 & 0,75 & 0,78 & 0,42 & 0,91 \\ 0,11 & - & 0,36 & 0,32 & 0,68 & 0,2 \\ 0,75 & 0,36 & - & 0,96 & 0,68 & 0,84 \\ 0,78 & 0,32 & 0,96 & - & 0,64 & 0,88\\0,42 & 0,68 & 0,68 & 0,64 & - & 0,52\\ 0,91 & 0,2 & 0,84 & 0,88 & 0,52 & -\end{bmatrix}](https://drive.google.com/uc?export=view&id=1a4F52xwtXZN5yT-__stSlzqtRQZuN-by)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(SP2)
 
 Note que ![\Phi_{1,2}(sp^{i,j}_{1,2})](https://drive.google.com/uc?export=view&id=1Uy67KbQOAy0by0u7dgUe2QqGDy9Lb1Lo) tem apenas uma agregação, isto foi possível graças ao fato de que SP tem só três dimenssões em função do nosso exemplo contar com apenas duas opiniões - a quata dimenssão é redundante (visto que a Equação 5 é modular, o resultado de *A-B* é o mesmo que o de *B-A*).
- 
- - Nível 2: *Opiniões e Postagens -* Aqui é calculado o nível de consenso cx_k para cada opinião. Para nosso exemplo, temos apenas duas opiniões disponíveis, portanto cx_k fica restrito a aplicar a Equação 5 aos resultados acima (SP1), onde
+
+ - Nível 2: *Opiniões e Postagens -* Aqui é calculado o nível de consenso ![cx_k](https://drive.google.com/uc?export=view&id=1G1bAPCcD6UXxe7e7IKbsiOmOZXLFS0M7) para cada opinião. Para nosso exemplo, temos apenas duas opiniões disponíveis, portanto ![cx_k](https://drive.google.com/uc?export=view&id=1G1bAPCcD6UXxe7e7IKbsiOmOZXLFS0M7) fica restrito a aplicar a Equação 5 aos resultados acima (SP1), onde
  
  ![cx_1~\mbox{e}~cx_2=\frac{\sum^2_{l=1,l\neq k}(sp_{k,l} + sp_{l,k})}{2(2-1)}=\frac{(0,6+0,6)}{2}=0,6](https://drive.google.com/uc?export=view&id=1cGLVfVTDwLVCIHehxok7KdrV_mrR7v6L)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  
@@ -145,11 +145,11 @@ Note que ![\Phi_{1,2}(sp^{i,j}_{1,2})](https://drive.google.com/uc?export=view&i
  
  ![cg=\frac{\sum^2_{k=1}cx_k}{2}=\frac{0,6+0,6}{2}=0,6](https://drive.google.com/uc?export=view&id=1cCPq809INVtwAFbuckXnP_6Ol0M9Hhvk)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  
-O consenso final foi 0,6, próximo ao aleatório, o que faz sentido, visto que os números utilizados foram escolhidos a esmo. Perceba ainda que até este ponto, identificar as postagens de instrutores não se mostrou necessário. Como o nível de consenso final é muito baixo - 0,6 - identificar as postagens de instrutores não se fez necessário. Porém, por hipótese, considere que a postagem ![p^4](https://drive.google.com/uc?export=view&id=1lJRDKJO0QDf8BSDMpeFDZB9OVsS_OBzZ) é de um instrutor.
+O consenso final foi 0,6; próximo ao aleatório; o que faz sentido; visto que os números utilizados foram escolhidos a esmo. Perceba ainda que até este ponto, identificar as postagens de instrutores não se mostrou necessário. Como o nível de consenso final é muito baixo - 0,6 - identificar as postagens de instrutores não se fez necessário. Porém, por hipótese, considere que a postagem ![p^4](https://drive.google.com/uc?export=view&id=1lJRDKJO0QDf8BSDMpeFDZB9OVsS_OBzZ) é de um instrutor.
  
  ![\begin{align*}q_{x_1}&=\sum_{i=1}^{1}\frac{a_{i}(x_{1})}{1}=\frac{a_{i}(0,78)}{1}=\frac{1}{1}=1\\ q_{x_2}&=\sum_{i=1}^{1}\frac{a_{i}(x_{2})}{1}=\frac{a_{i}(0,32)}{1}=\frac{0}{1}=0\end{align*}](https://drive.google.com/uc?export=view&id=1TalbambVF1Erb3yIOAJPcT1lhRE0dvbv)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  
-Caso a hipótese x_1 saisse vencedora, este exemplo contribuiria para concluirmos que há relação entre consenso e a opinião dos instrutores, caso x_2 vencesse, este exemplo contribuiria para a conclusão oposta.
+Caso a hipótese ![x^1](https://drive.google.com/uc?export=view&id=1kBxOloy40W08uhhPyVElPH4NVG7Ur6nx) saisse vencedora, este exemplo contribuiria para concluirmos que há relação entre consenso e a opinião dos instrutores, caso ![x^2](https://drive.google.com/uc?export=view&id=1F0z6P6PurP4u38YkSiad_sWLbq2Ocys0) vencesse, este exemplo contribuiria para a conclusão oposta.
 
 ## Consenso vs. Qualidade
 
