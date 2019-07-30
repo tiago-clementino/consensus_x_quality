@@ -98,7 +98,7 @@ Assim, podemos entender ![\mu^p_{i,j}\in M](https://drive.google.com/uc?export=v
  
  - Nível 4: *Geral -* O nível final de consenso *cg* é definido como
  
- ![cg=cx_k : cx_k >= cx_l~\forall~l\in\{1,2,..,n\}](https://drive.google.com/uc?export=view&id=1QfNu-S4s3Ptq2MnY4St0aZvvZZIioGOE)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(7)
+ ![cg=cx_k : cx_k \geq cx_l~\forall~l\in\{1,2,..,n\}](https://drive.google.com/uc?export=view&id=1QfNu-S4s3Ptq2MnY4St0aZvvZZIioGOE)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(7)
  
 Em tendo realizado os cálculos destes quatro níveis, três resultados são especialmente úteis aqui: Com a matriz de preferências agregadas por opinião do Nível 2 podemos identificar qual opinião é mais forte; com a matriz de preferências agregadas por postagem do Nível 3 podemos contabilizar quais instrutores apoiam certa opinião (vide Equação 8); e o nível de consenso geral do Nível 4. Para entender melhor cada um destes resultados, observe no código fonte a rotina que os processa diretamente. Para tal, vide o método 'calculeConsensusGeneral', do tipo 'ForumThread', no arquivo '/consensus/src/main/java/mooc_forum_analytics/ForumThread.java'.
 
@@ -157,7 +157,7 @@ Perceba os resultados ficam bem próximo de 0,5 (aleatório), o que faz sentido 
  
  - Nível 4: *Geral -* Agora calculemos o nível de consenso geral com base na Equação 7 
  
- ![cg=cx_k : cx_k >= cx_l~\forall~l\in\{1,2,..,n\}=0,5378783333](https://drive.google.com/uc?export=view&id=1cCPq809INVtwAFbuckXnP_6Ol0M9Hhvk)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ ![cg=cx_k : cx_k \geq cx_l~\forall~l\in\{1,2,..,n\}=0,5378783333](https://drive.google.com/uc?export=view&id=1cCPq809INVtwAFbuckXnP_6Ol0M9Hhvk)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  
 O consenso final foi 0,5378783333 (aproximadamente aleatório); o que faz sentido; visto que os números utilizados foram escolhidos ao acaso.
 
