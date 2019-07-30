@@ -121,11 +121,11 @@ Perceba que no nosso caso S1 é uma matriz de ![6\times 2~(m\times n)](https://d
  
 Sendo *g* a função que promove tal ajuste e ![s_p\in S_p~\mbox{e}~s_x\in S_x](https://drive.google.com/uc?export=view&id=18aG7dTtsk_qQsq1XCPLlPszPnbhogg6Ggg) as positividades de postagem e opinião, assumindo valores em [-1,1]. Para este exemplo, tome as matrizes de positividade abaixo
 
- ![S_p=\begin{bmatrix}0,5\\-0,5\\0\\1\\-1\\ -1\end{bmatrix}~\mbox{e}~S_x=\begin{bmatrix}1&-1\end{bmatrix}](https://drive.google.com/uc?export=view&id=12qQAA2wQucSCZVW011XLZGhItRMYkJFTt)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ ![S_p=\begin{bmatrix}0,1\\0,15\\-0,15\\0,05\\0\\ -0,1\end{bmatrix}~\mbox{e}~S_x=\begin{bmatrix}0,1&-0,15\end{bmatrix}](https://drive.google.com/uc?export=view&id=12qQAA2wQucSCZVW011XLZGhItRMYkJFTt)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  
 Como resultado temos a nova matriz S2 abaixo
 
- ![S2=\begin{bmatrix}0,75 & 0,64\\ 0,64 & 0,75\\ 0,26 & 0,13\\ 0,78 & 0,68\\ 0,6 & 0,66\\0,11 & 0,18\end{bmatrix}](https://drive.google.com/uc?export=view&id=12qQAA2wQucSCZVW011XLZGhItRMYkJFTtt)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(S2)
+ ![S2=\begin{bmatrix}1 & 0,0239\\ 0,085 & 0,85\\ 0,635 & 0,37\\ 0,755 & 0,22\\ 0,35 & 0,585\\0,79 & 0,155\end{bmatrix}](https://drive.google.com/uc?export=view&id=12qQAA2wQucSCZVW011XLZGhItRMYkJFTtt)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(S2)
 
 A partir de S2, definiremos a matriz de preferências M1 com base e uma relação de preferência/precedência ![\mu^p_{i,j}](https://drive.google.com/uc?export=view&id=1TkXAu3qFL-XQBBlKf-J9ovZG8NMlN9xa) que compara as similaridades entre uma postagem *p* e duas opiniões ![x^i](https://drive.google.com/uc?export=view&id=1Qw5h7JtI_SeW49Tmq4uIlhVnQcN_EFLQ) e ![x^j](https://drive.google.com/uc?export=view&id=1pQNanxVBriTkoYpiOeVY5C4xJd-zmi6d). Para nosso exemplo utilizaremos em ![\mu^p_{i,j}](https://drive.google.com/uc?export=view&id=1TkXAu3qFL-XQBBlKf-J9ovZG8NMlN9xa) uma equação similar à Equação 2, porém em função de ![g(\Delta^{-1}_{p,x_i})](https://drive.google.com/uc?export=view&id=1oATk1B2rf9TGyI0zbLrOBJS8dIWyIYEGg) e ![g(\Delta^{-1}_{p,x_i})](https://drive.google.com/uc?export=view&id=1oATk1B2rf9TGyI0zbLrOBJS8dIWyIYEGg), veja abaixo
 
@@ -133,15 +133,15 @@ A partir de S2, definiremos a matriz de preferências M1 com base e uma relaçã
 
 Assim, para este exemplo, a matriz M1 resultante é a seguinte
 
- ![\mu^p_{i,j} = \overset{\mu^p_{1,2}\mu^p_{2,1}}{\begin{bmatrix}0,56 & 0,44\\0,44 & 0,56\\0,56 & 0,44\\0,55 & 0,45\\0,47 & 0,53\\0,46 & 0,54\end{bmatrix}}](https://drive.google.com/uc?export=view&id=1lhjNkTfwp8GVbqo4Hilr23K9R_IYwv34)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(M1)
+ ![\mu^p_{i,j} = \overset{\mu^p_{1,2}\mu^p_{2,1}}{\begin{bmatrix}0,98805 & 0,01195\\0,1175 & 0,8825\\0,6325 & 0,3675\\0,7675 & 0,2325\\0,3825 & 0,6175\\0,8175 & 0,1825\end{bmatrix}}](https://drive.google.com/uc?export=view&id=1lhjNkTfwp8GVbqo4Hilr23K9R_IYwv34)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(M1)
 
 Com isto podemos agora calcular SP, uma matriz que compara todas as preferências ![\mu](https://drive.google.com/uc?export=view&id=1nofYrnnjDg4CFtSTo2k0iQSMwwU2CWy-) entre si, conforme Equação 2. No caso geral, esta matriz tem quatro dimenssões, mas para nosso exemplo (com apenas duas opiniões) três dimenssões são suficientes para visualizar ![SP_{(6\times 6\times 2)}](https://drive.google.com/uc?export=view&id=15vx6XZgQurU0Z3ZBsZmDZTqVzlL_HU9B). Para termos uma visualização plana, ainda devemos utilizar duas visualizações separadas, uma para ![sp^{i,j}_{1,2}](https://drive.google.com/uc?export=view&id=1sQaA2fzyU0EWbFWR1m3y4TIXpc1ffpQS) e outra para ![sp^{i,j}_{2,1}](https://drive.google.com/uc?export=view&id=1CYlm8emuFglj_QMB2IngQnUL_fSXOLFR), veja abaixo
  
- ![\begin{align*}sp^{i,j}_{1,2} &= \begin{bmatrix}- & 0,56 & 0,5 & 0,5 & 0,54 & 0,55 \\ 0,44 & - & 0,44 & 0,44 & 0,48 & 0,49 \\ 0,5 & 0,56 & - & 0,5 & 0,54 & 0,55 \\ 0,5 & 0,56 & 0,5 & - & 0,54 & 0,54\\0,46 & 0,52 & 0,46 & 0,46 & - & 0,5\\ 0,45 & 0,51 & 0,45 & 0,46 & 0,5 & -\end{bmatrix}\\sp^{i,j}_{2,1} &= \begin{bmatrix}- & 0,44 & 0,5 & 0,5 & 0,46 & 0,45 \\ 0,56 & - & 0,56 & 0,56 & 0,52 & 0,51 \\0,5 & 0,44 & - & 0,5 & 0,46 & 0,45 \\ 0,5 & 0,44 & 0,5 & - & 0,46 & 0,46\\0,54 & 0,48 & 0,54 & 0,54 & - & 0,5\\ 0,55 & 0,49 & 0,55 & 0,54 & 0,5 & -\end{bmatrix}\end{align*}](https://drive.google.com/uc?export=view&id=1_JVXqJFgHpI8G1fEQq4mEYkh4ije1Ix6)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(SP)
+ ![\begin{align*}sp^{i,j}_{1,2} &= \begin{bmatrix}- & 0,935275 & 0,676525 & 0,610275 & 0,802775 & 0,585275 \\ 0,064725 & - & 0,2425 & 0,175 & 0,3675 & 0,15 \\ 0,322225 & 0,7575 & - & 0,4325 & 0,62625 & 0,4075 \\ 0,389725 & 0,825 & 0,5675 & - & 0,6925 & 0,475\\0,197225 & 0,6325 & 0,375 & 0,3075 & - & 0,2825\\ 0,414725 & 0,85 & 0,5925 & 0,525 & 0,7175 & -\end{bmatrix}\\sp^{i,j}_{2,1} &= \begin{bmatrix}- & 0,064725 & 0,322225 & 0,389725 & 0,197225 & 0,414725 \\ 0,935275 & - & 0,7575 & 0,825 & 0,6325 & 0,85 \\0,676525 & 0,2425 & - & 0,5675 & 0,375 & 0,5925 \\ 0,610275 & 0,175 & 0,4325 & - & 0,3075 & 0,525\\0,802775 & 0,3675 & 0,62625 & 0,6925 & - & 0,7175\\ 0,585275 & 0,15 & 0,4075 & 0,475 & 0,2825 & -\end{bmatrix}\end{align*}](https://drive.google.com/uc?export=view&id=1_JVXqJFgHpI8G1fEQq4mEYkh4ije1Ix6)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(SP)
 
 A partir de SP, com base em uma função de agregação ![\Phi](https://drive.google.com/uc?export=view&id=1d09BCIsNBjfqrWWbxEPOEvl0MnXetL27) (aqui usaremos a média aritmética), geraremos duas matrizes de preferências coletivas agregando SP, sendo a primeira em função das opiniões,
 
- ![\begin{align*}\Phi^i(\Phi^j(sp^{i,j}_{1,2})))&=\Phi^i\circ\Phi^j\begin{bmatrix}- & 0,56 & 0,5 & 0,5 & 0,54 & 0,55 \\ 0,44 & - & 0,44 & 0,44 & 0,48 & 0,49 \\ 0,5 & 0,56 & - & 0,5 & 0,54 & 0,55 \\ 0,5 & 0,56 & 0,5 & - & 0,54 & 0,54\\0,46 & 0,52 & 0,46 & 0,46 & - & 0,5\\ 0,45 & 0,51 & 0,45 & 0,46 & 0,5 & -\end{bmatrix}=\Phi^i\begin{bmatrix}0,53\\0,46\\0,53\\0,53\\0,48\\0,47\end{bmatrix}=0,5\\ \Phi^i(\Phi^j(sp^{i,j}_{2,1})))&=\Phi^i\circ\Phi^j\begin{bmatrix}- & 0,44 & 0,5 & 0,5 & 0,46 & 0,45 \\ 0,56 & - & 0,56 & 0,56 & 0,52 & 0,51 \\0,5 & 0,44 & - & 0,5 & 0,46 & 0,45 \\ 0,5 & 0,44 & 0,5 & - & 0,46 & 0,46\\0,54 & 0,48 & 0,54 & 0,54 & - & 0,5\\ 0,55 & 0,49 & 0,55 & 0,54 & 0,5 & -\end{bmatrix}=\Phi^i\begin{bmatrix}0,47\\0,54\\0,47\\0,47\\0,52\\0,53\end{bmatrix}=0,5\end{align*}](https://drive.google.com/uc?export=view&id=1iV9cymZ9dOfncXDpLHTc7zbPnpubtnSm)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(SP1)
+ ![\begin{align*}\Phi^i(\Phi^j(sp^{i,j}_{1,2})))&=\Phi^i\circ\Phi^j\begin{bmatrix}- & 0,935275 & 0,676525 & 0,610275 & 0,802775 & 0,585275 \\ 0,064725 & - & 0,2425 & 0,175 & 0,3675 & 0,15 \\ 0,322225 & 0,7575 & - & 0,4325 & 0,62625 & 0,4075 \\ 0,389725 & 0,825 & 0,5675 & - & 0,6925 & 0,475\\0,197225 & 0,6325 & 0,375 & 0,3075 & - & 0,2825\\ 0,414725 & 0,85 & 0,5925 & 0,525 & 0,7175 & -\end{bmatrix}=\Phi^i\begin{bmatrix}0,722025\\0,199945\\0,509195\\0,589945\\0,358945\\0,619945\end{bmatrix}=0,5\\ \Phi^i(\Phi^j(sp^{i,j}_{2,1})))&=\Phi^i\circ\Phi^j\begin{bmatrix}- & 0,064725 & 0,322225 & 0,389725 & 0,197225 & 0,414725 \\ 0,935275 & - & 0,7575 & 0,825 & 0,6325 & 0,85 \\0,676525 & 0,2425 & - & 0,5675 & 0,375 & 0,5925 \\ 0,610275 & 0,175 & 0,4325 & - & 0,3075 & 0,525\\0,802775 & 0,3675 & 0,62625 & 0,6925 & - & 0,7175\\ 0,585275 & 0,15 & 0,4075 & 0,475 & 0,2825 & -\end{bmatrix}=\Phi^i\begin{bmatrix}0,277725\\0,800055\\0,490805\\0,410055\\0,641305\\0,380055\end{bmatrix}=0,5\end{align*}](https://drive.google.com/uc?export=view&id=1iV9cymZ9dOfncXDpLHTc7zbPnpubtnSm)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(SP1)
  
 e a segunda matriz em função das postagens,
  
@@ -162,6 +162,13 @@ Note que ![\Phi_k(\Phi_l(sp^{i,j}_{k,l})))](https://drive.google.com/uc?export=v
  ![cg=\frac{\sum^2_{k=1}cx_k}{2}=\frac{0,5+0,5}{2}=0,5](https://drive.google.com/uc?export=view&id=1cCPq809INVtwAFbuckXnP_6Ol0M9Hhvk)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  
 O consenso final foi 0,5 (aleatório); o que faz sentido; visto que os números utilizados foram escolhidos a esmo.
+
+Perceba ainda que até este ponto, ainda não identificamos as postagens de instrutores. Como o nível de consenso final é muito baixo - 0,5 - identificar as postagens de instrutores não faz sentido. Porém, por hipótese, considere que a postagem ![p^4](https://drive.google.com/uc?export=view&id=1lJRDKJO0QDf8BSDMpeFDZB9OVsS_OBzZ) é de um instrutor. Agora apliquemos a Equação 8 às similaridades de ![p^4](https://drive.google.com/uc?export=view&id=1lJRDKJO0QDf8BSDMpeFDZB9OVsS_OBzZ) (S1) com relação à ![x^1](https://drive.google.com/uc?export=view&id=1kBxOloy40W08uhhPyVElPH4NVG7Ur6nx) e à ![x^2](https://drive.google.com/uc?export=view&id=1F0z6P6PurP4u38YkSiad_sWLbq2Ocys0)
+ 
+ ![\begin{align*}q_{x_1}&=\sum_{i=1}^{1}\frac{a_{i}(x_{1})}{1}=\frac{a_{i}(0,755>0,5)}{1}=\frac{1}{1}=1\\ q_{x_2}&=\sum_{i=1}^{1}\frac{a_{i}(x_{2})}{1}=\frac{a_{i}(0,22>0,5)}{1}=\frac{0}{1}=0\end{align*}](https://drive.google.com/uc?export=view&id=1TalbambVF1Erb3yIOAJPcT1lhRE0dvbv)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ 
+Caso a opinião ![x^1](https://drive.google.com/uc?export=view&id=1kBxOloy40W08uhhPyVElPH4NVG7Ur6nx) saisse vencedora, este exemplo contribuiria para concluirmos que há relação entre a opinião consensual e a opinião dos instrutores, caso ![x^2](https://drive.google.com/uc?export=view&id=1F0z6P6PurP4u38YkSiad_sWLbq2Ocys0) vencesse, este exemplo contribuiria para a conclusão oposta.
+
 
 ## Consenso vs. Qualidade
 
