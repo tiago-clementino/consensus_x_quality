@@ -72,31 +72,33 @@ Em sistemas de apoio ao consenso, sobretudo em ambientes online, opiniões e pre
 
 Assim, podemos entender ![\mu^p_{i,j}\in M](https://drive.google.com/uc?export=view&id=1d6QKUlQ0V4jP0ku7fXwTBoaEnFkvd0yx) como a relação de preferência/precedência entre as opiniões ![x^i](https://drive.google.com/uc?export=view&id=1srFRq670QhL_hrhmX-sYm2zbm3gRc_Zs) e ![x^j](https://drive.google.com/uc?export=view&id=1K3JJFmBrkne6bD01VIfLsq9bwI1YtqIW) em função de *p*, sendo ![\mu^p_{i,j}=\mu(\Delta^{-1}_{p,x^i},\Delta^{-1}_{p,x^j})(\forall p\in P,~\forall x\in X,~\forall i,j\in \{1,..., n\})](https://drive.google.com/uc?export=view&id=1rsdkn7lee_g-qcAJKwOjyfgyHkfp50gc). Diante disto, para identificar o grau de consenso da discussão, devemos calcular quatro níveis de apoio - relação de preferência - entre o conjunto de postagens e o de opiniões disponíveis: 1) entre pares de opiniões; 2) entre opiniões e postagens; 3) entre postagens e opiniões; e, 4) geral [Pérez et al. 2018].
 
- - Nível 1: *Par de Alternativas -* Este nível consiste em gerar uma matriz de similaridade para cada par de postagens em relação a cada par de opiniões ![SP^{i,j}=(sp^{i,j}_{k,l}),\forall p^i,p^j\in P(i\neq j),\forall x^k,x^l\in X (k\neq l)](https://drive.google.com/uc?export=view&id=1ojKI8EBHPaSL-IATQqfU9lXTYNZq3Do1), conforme a equação: 
+ - Nível 1: *Par de Alternativas -* Este nível consiste em gerar uma matriz de similaridade para cada par de postagens em relação a cada par de opiniões ![SP^{i,j}=(sp^{i,j}_{k,l}),\forall p^i,p^j\in P(i\neq j),\forall x^k,x^l\in X (k\geq l)](https://drive.google.com/uc?export=view&id=1ojKI8EBHPaSL-IATQqfU9lXTYNZq3Do1), conforme a equação: 
 
 ![sp^{i,j}_{k,l}=\frac{1+{(\mu^{p^i}_{k,l}-\mu^{p^j}_{k,l})}}{2}](https://drive.google.com/uc?export=view&id=12Vcvnh1pEVzTSOPKW6isuS3KVoX_JxSf)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(2)
 
  Forma-se, assim, uma matriz de quatro dimensões ![SP_{(m \times m)\times (n \times n)}](https://drive.google.com/uc?export=view&id=1D8Jqi3aEljDynjlxaPL61ru_shPHXFiY) comparando as preferências de todas as postagens duas a duas ![(m \times m)](https://drive.google.com/uc?export=view&id=1bZpTKC6WU8whxaRmyKiqhEu2bVSxrPjm) em função às preferências daquela postagem com relação à cada par de opiniões comparadas ![(n \times n)](https://drive.google.com/uc?export=view&id=1CrrQIJ4YcqrkbTgt2BhSdqMadD_H-YJL). Em seguida, com base em uma função de agregação determinada ![\Phi](https://drive.google.com/uc?export=view&id=1d09BCIsNBjfqrWWbxEPOEvl0MnXetL27), obtemos duas matrizes de preferência coletiva 1) comparando pares de opiniões agregando ![SP_{(m \times m)\times (n \times n)}](https://drive.google.com/uc?export=view&id=1D8Jqi3aEljDynjlxaPL61ru_shPHXFiY) por postagem
  
- ![sp_{k,l}=\Phi^i(\Phi^j(sp^{i,j}_{k,l})) \forall i,j\in \{1,...,m\}~|~i\neq j](https://drive.google.com/uc?export=view&id=1Wjz5OFUrcu_L7HOrIGkITnYPQsL6X9Ov)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(3)
+ ![sp_{k,l}=\Phi^i(\Phi^j(sp^{i,j}_{k,l})) \forall i,j\in \{1,...,m\}~|~i\geq j](https://drive.google.com/uc?export=view&id=1Wjz5OFUrcu_L7HOrIGkITnYPQsL6X9Ov)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(3)
  
  e 2) pares de postagens agregando ![SP_{(m \times m)\times (n \times n)}](https://drive.google.com/uc?export=view&id=1D8Jqi3aEljDynjlxaPL61ru_shPHXFiY) por opinião
  
- ![sp^{i,j}=\Phi_k(\Phi_l(sp^{i,j}_{k,l}) \forall k,l\in \{1,...,n\}~|~k\neq l](https://drive.google.com/uc?export=view&id=152tWxP1PJFEzk9jIeQY4goXeSo2drx3o)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(4)
+ ![sp^{i,j}=\Phi_k(\Phi_l(sp^{i,j}_{k,l}) \forall k,l\in \{1,...,n\}~|~k\geq l](https://drive.google.com/uc?export=view&id=152tWxP1PJFEzk9jIeQY4goXeSo2drx3o)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(4)
  
  Aqui usaremos a média harmônica como ![\Phi](https://drive.google.com/uc?export=view&id=1d09BCIsNBjfqrWWbxEPOEvl0MnXetL27); 
 
  - Nível 2: *Opiniões e Postagens -* Aqui é definido o nível de consenso para cada opinião ![cx_k,\forall k\in \{1,...,n\}](https://drive.google.com/uc?export=view&id=14CzC86PUHQ6izTUFrU4895dtosBTAgMF), calculado em função de todas as postagens *P* (já agregadas no nível anterior): 
  
- ![cx_k=\frac{\sum^n_{l=1,l\neq k}(sp_{k,l} + sp_{l,k})}{2(n-1)}](https://drive.google.com/uc?export=view&id=1TIJrHviPl1xETJL8n-MwLzYapNJUs1H5)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(5)
+ ![cx_k=\frac{\sum^n_{l=1,l\neq k}sp_{k,l}}{n-1}](https://drive.google.com/uc?export=view&id=1TIJrHviPl1xETJL8n-MwLzYapNJUs1H5)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(5)
  
- - Nível 3: *Postagens e Opiniões -* Este nível de consenso é adotado apenas neste trabalho e cria uma matriz de similaridade de natureza oposta à do nível anterior. Aqui é definido a ordem de similaridade em função de todas as opiniões *X* (já agregadas no nível anterior) com relação à cada postagem ![cp_i,i\in\{1,...,m\}](https://drive.google.com/uc?export=view&id=1CGErFe2E_4QPg4e-M8C5NK5AlyYfoIBj), conforme a equação:
+ - Nível 3: *Postagens e Opiniões -* Este nível de consenso é adotado apenas neste trabalho e define o quão balanceada a discussão está, conforme a equação:
  
- ![cp_i=\frac{\sum^m_{j=1,j\neq i}(sp_{i,j} + sp_{j,i})}{2(m-1)}](https://drive.google.com/uc?export=view&id=1S143DBNir_OwbNDjcOTIqW9GpeUJMLiR)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(6)
+ ![cp=\frac{\sum^m_{i=1}\sum^n_{k=1}g(\Delta^{-1}_{p^i,x_k})}{mn}](https://drive.google.com/uc?export=view&id=1S143DBNir_OwbNDjcOTIqW9GpeUJMLiR)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(6)
+ 
+ Quanto mais próximo de 0,5; mais balanceada a discussão está.
  
  - Nível 4: *Geral -* O nível final de consenso *cg* é definido como
  
- ![cg=\frac{\sum^n_{k=1}cx_k}{n}](https://drive.google.com/uc?export=view&id=1QfNu-S4s3Ptq2MnY4St0aZvvZZIioGOE)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(7)
+ ![cg=cx_k : cx_k >= cx_l~\forall~l\in\{1,2,..,n\}](https://drive.google.com/uc?export=view&id=1QfNu-S4s3Ptq2MnY4St0aZvvZZIioGOE)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(7)
  
 Em tendo realizado os cálculos destes quatro níveis, três resultados são especialmente úteis aqui: Com a matriz de preferências agregadas por opinião do Nível 2 podemos identificar qual opinião é mais forte; com a matriz de preferências agregadas por postagem do Nível 3 podemos contabilizar quais instrutores apoiam certa opinião (vide Equação 8); e o nível de consenso geral do Nível 4. Para entender melhor cada um destes resultados, observe no código fonte a rotina que os processa diretamente. Para tal, vide o método 'calculeConsensusGeneral', do tipo 'ForumThread', no arquivo '/consensus/src/main/java/mooc_forum_analytics/ForumThread.java'.
 
@@ -151,7 +153,7 @@ Perceba os resultados ficam bem próximo de 0,5 (aleatório), o que faz sentido 
  
  - Nível 3: *Postagens e Opiniões -* Aqui, com base na Equação 6, verifica-se se os valores estão balanceados - quanto mais próximo de 0,5; mais balanceado. Veja para o nosso exemplo
  
- ![cp=\frac{\sum^6_{i=1}\sum^2_{k=1}g(\Delta^{-1}_{p^i,x_k})}{6*2(2-1)}=0,48491](https://drive.google.com/uc?export=view&id=1IVZh_AOGu6kUbFHoXSJWypXXSWFo0mXO)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ ![cp=\frac{\sum^6_{i=1}\sum^2_{k=1}g(\Delta^{-1}_{p^i,x_k})}{6*2}=0,48491](https://drive.google.com/uc?export=view&id=1IVZh_AOGu6kUbFHoXSJWypXXSWFo0mXO)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  
  - Nível 4: *Geral -* Agora calculemos o nível de consenso geral com base na Equação 7 
  
