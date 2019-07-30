@@ -119,19 +119,19 @@ Para aprofundar o entendimento a respeito do modelo de consenso utilizado, tomar
 
 Perceba que no nosso caso S1 é uma matriz de ![6\times 2~(m\times n)](https://drive.google.com/uc?export=view&id=18aG7dTtsk_qQsq1XCPLlPszPnbhogg6G), sendo seis postagens e duas opiniões disponíveis. Agora que conhecemos a matriz de similaridades, devemos ajustá-la em função da diferença de positividade entre postagem e opinião comparadas. A positividade, como já mencionado, é uma valor pré-definido na base de dados que define o quão positivo ou negativo é aquela sentença. Este ajuste é necessário visto que um alto grau de semelhança entre duas postagens com positividades muito diferentes diz extatamente o oposto do que deveria. Tal ajuste será realizado conforme a Equação 9 abaixo
 
- ![g(\Delta^{-1}_{p^i,x_k})=|\Delta^{-1}_{p^i,x_k}-\frac{|s_{p^i}-s_{x_k}|}{2}|](https://drive.google.com/uc?export=view&id=12qQAA2wQucSCZVW011XLZGhItRMYkJFT)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(9)
- 
-Sendo *g* a função que promove tal ajuste e ![s_p\in S_p~\mbox{e}~s_x\in S_x](https://drive.google.com/uc?export=view&id=18aG7dTtsk_qQsq1XCPLlPszPnbhogg6Ggg) as positividades de postagem e opinião, assumindo valores em [-1,1]. Para este exemplo, tome as matrizes de positividade abaixo
+ ![g(\Delta^{-1}_{p^i,x_k})=|\Delta^{-1}_{p^i,x_k}-\frac{|s_{p^i}-s_{x_k}|}{2}|](https://drive.google.com/uc?export=view&id=1Gukp_KDoVl8mTw16U_Myavk1GFGZ65pa)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(9)
 
- ![S_p=\begin{bmatrix}0,1\\0,15\\-0,15\\0,05\\0\\ -0,1\end{bmatrix}~\mbox{e}~S_x=\begin{bmatrix}0,1&-0,15\end{bmatrix}](https://drive.google.com/uc?export=view&id=12qQAA2wQucSCZVW011XLZGhItRMYkJFTt)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Sendo *g* a função que promove tal ajuste e ![s_p\in S_p~\mbox{e}~s_x\in S_x](https://drive.google.com/uc?export=view&id=13F1XHlOrjDuqkbPkvvRI-jtvrwEqAih4) as positividades de postagem e opinião, assumindo valores em [-1,1]. Para este exemplo, tome as matrizes de positividade abaixo
+
+ ![S_p=\begin{bmatrix}0,1\\0,15\\-0,15\\0,05\\0\\ -0,1\end{bmatrix}~\mbox{e}~S_x=\begin{bmatrix}0,1&-0,15\end{bmatrix}](https://drive.google.com/uc?export=view&id=1Mst4rQ8mMWhJS5l9fxtTvhMSyb6cBoK9)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  
 Como resultado temos a nova matriz S2 abaixo
 
- ![S2=\begin{bmatrix}1 & 0,0239\\ 0,085 & 0,85\\ 0,635 & 0,37\\ 0,755 & 0,22\\ 0,35 & 0,585\\0,79 & 0,155\end{bmatrix}](https://drive.google.com/uc?export=view&id=12qQAA2wQucSCZVW011XLZGhItRMYkJFTtt)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(S2)
+ ![S2=\begin{bmatrix}1 & 0,0239\\ 0,085 & 0,85\\ 0,635 & 0,37\\ 0,755 & 0,22\\ 0,35 & 0,585\\0,79 & 0,155\end{bmatrix}](https://drive.google.com/uc?export=view&id=1w1mmtTYVSJleAOFrV5zeUm3ahj9JetgQ)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(S2)
 
-A partir de S2, definiremos a matriz de preferências M1 com base e uma relação de preferência/precedência ![\mu^p_{i,j}](https://drive.google.com/uc?export=view&id=1TkXAu3qFL-XQBBlKf-J9ovZG8NMlN9xa) que compara as similaridades entre uma postagem *p* e duas opiniões ![x^i](https://drive.google.com/uc?export=view&id=1Qw5h7JtI_SeW49Tmq4uIlhVnQcN_EFLQ) e ![x^j](https://drive.google.com/uc?export=view&id=1pQNanxVBriTkoYpiOeVY5C4xJd-zmi6d). Para nosso exemplo utilizaremos em ![\mu^p_{i,j}](https://drive.google.com/uc?export=view&id=1TkXAu3qFL-XQBBlKf-J9ovZG8NMlN9xa) uma equação similar à Equação 2, porém em função de ![g(\Delta^{-1}_{p,x_i})](https://drive.google.com/uc?export=view&id=1oATk1B2rf9TGyI0zbLrOBJS8dIWyIYEGg) e ![g(\Delta^{-1}_{p,x_i})](https://drive.google.com/uc?export=view&id=1oATk1B2rf9TGyI0zbLrOBJS8dIWyIYEGg), veja abaixo
+A partir de S2, definiremos a matriz de preferências M1 com base e uma relação de preferência/precedência ![\mu^p_{i,j}](https://drive.google.com/uc?export=view&id=1TkXAu3qFL-XQBBlKf-J9ovZG8NMlN9xa) que compara as similaridades entre uma postagem *p* e duas opiniões ![x^i](https://drive.google.com/uc?export=view&id=1Qw5h7JtI_SeW49Tmq4uIlhVnQcN_EFLQ) e ![x^j](https://drive.google.com/uc?export=view&id=1pQNanxVBriTkoYpiOeVY5C4xJd-zmi6d). Para nosso exemplo utilizaremos em ![\mu^p_{i,j}](https://drive.google.com/uc?export=view&id=1TkXAu3qFL-XQBBlKf-J9ovZG8NMlN9xa) uma equação similar à Equação 2, porém em função de ![g(\Delta^{-1}_{p,x_i})](https://drive.google.com/uc?export=view&id=1cNqnTYVxhz8TlUFjA70frCpKvA-fgi-W) e ![g(\Delta^{-1}_{p,x_j})](https://drive.google.com/uc?export=view&id=13b9bVPNgug_CfMOOHkJghke5y2GATpPm), veja abaixo
 
- ![\mu^p_{i,j}=\frac{1+{[~g(\Delta^{-1}_{p,x_i})-g(\Delta^{-1}_{p,x_j})~]}}{2}](https://drive.google.com/uc?export=view&id=12qQAA2wQucSCZVW011XLZGhItRMYkJFT)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(10)
+ ![\mu^p_{i,j}=\frac{1+{[~g(\Delta^{-1}_{p,x_i})-g(\Delta^{-1}_{p,x_j})~]}}{2}](https://drive.google.com/uc?export=view&id=14mYAREv4hqXtJcGUkAezbgvBmiM2C3TS)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(10)
 
 Assim, para este exemplo, a matriz M1 resultante é a seguinte
 
